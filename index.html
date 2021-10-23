@@ -4,10 +4,43 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" type="image/png" href="favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Zen+Old+Mincho:wght@400;700;900&display=swap" rel="stylesheet"> 
+    <link rel="stylesheet" href="style.css">
     <script src="books.js" defer></script>
-    <title>Books</title>
+    <title>My Library</title>
 </head>
 <body>
-    
+    <div class="container">
+        <div class="header">
+            <h1>My Library</h1>
+        </div>
+        <div class="books-container">
+            <div class="book-card">
+                <img id="book-img" src="icons/TheHobbit.jpg" alt="book-img">
+                <div class="book-info">
+                    <span>Title: 
+                        <span id="book-title">The Hobbit</span>
+                    </span>
+                    <span>Author:
+                        <span id="book-author">J.R.R. Tolkien</span>
+                    </span>
+                    <span>Pages:
+                        <span id="book-pages">235</span>
+                    </span>
+                    <label>Read?
+                        <input type="checkbox">
+                        <span id="checkmark"></span>
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="footer">
+            <h2>GitHub: egoist000</h2>
+            <a href="https://github.com/egoist000"><img class="github-logo" src="icons/GitHub-Mark-32px.png" alt="GitHubLogo"></a>
+        </div>
+    </div>
 </body>
 </html>
