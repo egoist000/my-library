@@ -121,24 +121,25 @@ html, body {
 
 .buttons {
     display: flex;
-    flex-direction: column;
     align-items: center;
-    gap: 0.5rem;
+    justify-content: center;
+    margin-bottom: 1rem;
+    gap: 1rem;
 }
 
 #edit, #delete {
     display: flex;
-    justify-content: space-around;
     align-items: center;
-    width: 8rem;
-    height: 2rem;
+    justify-content: center;
     cursor: pointer;
     border: none;
     border-radius: 1rem;
 }
 
 #edit img, #delete img {
-    height: 100%;
+    padding: 0.3rem;
+    height: 60%;
+    width: 60%;
 }
 
 #edit {
@@ -147,11 +148,10 @@ html, body {
 
 #delete {
     background-color: var(--color5);
-    margin-bottom: 1rem;
 }
 
 #edit:hover, #delete:hover {
-    transform: scale(1.05, 1.05);
+    transform: scale(1.1, 1.1);
     transition: transform 0.3s;
     color: white;
 }
