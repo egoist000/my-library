@@ -31,6 +31,8 @@ html, body {
 /* Header */
 
 .header {
+    display: flex;
+    gap: 1rem;
     background-color: var(--color2);
     color: var(--color1);
     padding: 1rem 0 1rem 1rem;
@@ -96,13 +98,13 @@ html, body {
     color: var(--color8);
 }
 
-.book-card img {
+.book-card #book-img {
     transition: opacity 1s;
     width: 100%;
     height: 18rem
 }
 
-.book-card:hover img {
+.book-card:hover #book-img {
     opacity: 0.1;
 }
 
@@ -119,18 +121,24 @@ html, body {
 
 .buttons {
     display: flex;
-    gap: 1rem;
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
 }
 
 #edit, #delete {
-    width: 40%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 8rem;
     height: 2rem;
-    margin-bottom: 1rem;
-    align-self: flex-end;
     cursor: pointer;
     border: none;
     border-radius: 1rem;
+}
+
+#edit img, #delete img {
+    height: 100%;
 }
 
 #edit {
@@ -139,6 +147,7 @@ html, body {
 
 #delete {
     background-color: var(--color5);
+    margin-bottom: 1rem;
 }
 
 #edit:hover, #delete:hover {
