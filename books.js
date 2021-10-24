@@ -1,3 +1,6 @@
+const modal = document.querySelector(".modal-container");
+const addBtn = document.getElementById("add-btn");
+
 let myLibrary = [];
 
 function Book(title, author, numberOfPages, isRead) {
@@ -19,3 +22,13 @@ function addBookToLibrary() {
 const theHobbit = new Book("The Hobbit", "J.R.R. Tolkien", 256, true);
 
 console.log(theHobbit.info());
+
+addBtn.addEventListener("click", () => {
+    modal.style.display = "flex";
+});
+
+window.addEventListener("click", e => {
+    if(e.target === modal) {
+        modal.style.display = "none";
+    }
+})

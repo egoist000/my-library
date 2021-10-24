@@ -193,6 +193,87 @@ html, body {
     }
 }
 
+/* Modal */
+
+.modal-container {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
+.modal {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border: 1px solid black;
+    background-color: #02734A;
+    color: var(--color1);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    font-size: 1.3rem;
+    color: var(--color11);
+}
+
+.modal-header #add-square {
+    font-size: 2rem;
+}
+
+.modal-header h2 {
+    margin: 0;
+    padding-bottom: 0.4rem;
+}
+
+.new-book {
+    display: flex;
+    flex-direction: column;
+    flex: 1 0 auto;
+    background-color: var(--color10);
+    gap: 1rem;
+    padding: 1rem;
+}
+
+.input {
+    display: flex;
+    justify-content: space-between;
+    font-size: 1.2rem;
+    gap: 1rem;
+}
+
+#pages, #read {
+    align-self: flex-start;
+}
+
+.add-btn {
+    display: flex;
+    align-self: center;
+    margin: 0.3rem 0;
+}
+
+.add-btn button:hover {
+    color: var(--color10);
+}
+
+.add-btn button {
+    color: var(--color11);
+    background-color: transparent;
+    cursor: pointer;
+    border: none;
+    font-size: 1.5rem;
+}
+
 /* Footer */
 
 .footer {
