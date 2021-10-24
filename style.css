@@ -51,7 +51,7 @@ html, body {
 
 .books-container {
     flex: 1 0 auto;
-    padding: 2rem;
+    padding: 2rem 6rem;
     background-color: var(--color3);
 }
 
@@ -66,6 +66,7 @@ html, body {
 }
 
 .book-info {
+    visibility: hidden;
     opacity: 0;
     transition: 0.5s ease;
     position: absolute;
@@ -109,6 +110,7 @@ html, body {
 }
 
 .book-card:hover .book-info {
+    visibility: visible;
     opacity: 1;
 }
 
@@ -139,21 +141,56 @@ html, body {
     width: 3rem;
     height: 3rem;
     border-radius: 1.5rem;
-    background-color: var(--color7);
 }
 
 #edit {
+    background-color: #02734A;
     color: var(--color11);
 }
 
 #delete {
-    color: var(--color5);
+    background-color: #D91424;
+    color: var(--color4);
 }
 
 #edit:hover, #delete:hover {
     transform: scale(1.1, 1.1);
     transition: transform 0.3s;
     color: white;
+}
+
+/* Float button */
+
+.float {
+    position: fixed;
+    cursor: pointer;
+    width: 4rem;
+    height: 4rem;
+    bottom: 5rem;
+    right: 1.5rem;
+    background-color: var(--color11);
+    color: var(--color10);
+    border-radius: 2rem;
+    text-align: center;
+    box-shadow: 0 0.3rem 1rem 0.1rem rgba(25, 33, 39, 0.5), 0 6px 20px 0 rgba(38, 48, 58, 0.5);
+}
+
+.float:hover {
+    animation: rotation 1s;
+}
+
+.float-btn {
+    font-size: 1.5rem;
+    margin-top: 1.27rem;
+}
+
+@keyframes rotation {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 /* Footer */
