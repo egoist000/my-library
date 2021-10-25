@@ -31,13 +31,13 @@
                 <div class="book-info">
                     <div class="book-prop">
                         <span class="prop">Title: 
-                            <span id="book-title">The Hobbit</span>
+                            <span id="book-title-info">The Hobbit</span>
                         </span>
                         <span class="prop">Author:
-                            <span id="book-author">J.R.R. Tolkien</span>
+                            <span id="book-author-info">J.R.R. Tolkien</span>
                         </span>
                         <span class="prop">Pages:
-                            <span id="book-pages">235</span>
+                            <span id="book-pages-info">235</span>
                         </span>
                         <span class="prop">Read?
                             <input id="checkmark" type="checkbox">
@@ -60,34 +60,46 @@
         </div>
         <!--Modal add-->
         <div class="modal-container">
-            <div id="add-modal" class="modal">
-                <div class="modal-header">
-                    <h2>Add a book</h2>
-                    <i class="fas fa-book-open" id="add-square"></i>
+            <div class="form-container">
+                <div class="form-header">
+                    <h2>Add new book</h2>
+                    <i class="fas fa-book"></i>
                 </div>
-                <div class="new-book">
-                    <div class="input">
-                        <label class="lbl" for="book-name">Book name:</label>
-                        <input type="text" name="book-name" minlength="1" maxlength="32" required>
+                <form class="form" id="add-book-form" autocomplete="off">
+                    <div class="form-control">
+                        <label>Book title</label>
+                        <input id="book-title" type="text" placeholder="An awesome book">
+                        <i class="fas fa-check-circle"></i>
+                        <i class="fas fa-exclamation-circle"></i>
+                        <i class="fas fa-font"></i>
+                        <small>Error</small>
                     </div>
-                    <div class="input">
-                        <label for="book-author">Author:</label>
-                        <input type="text" name="book-author" minlength="1" maxlength="32" required>
+                    <div class="form-control">
+                        <label>Author</label>
+                        <input id="book-author" type="text" placeholder="An awesome author">
+                        <i class="fas fa-check-circle"></i>
+                        <i class="fas fa-exclamation-circle"></i>
+                        <i class="fas fa-user"></i>
+                        <small>Error</small>
                     </div>
-                    <div class="input" id="pages">
-                        <label for="pages-read">Number of pages:</label>
-                        <input type="number" name="pages-read" size="2" min="0" max="9999">
+                    <div class="form-control">
+                        <label>Number of pages</label>
+                        <input id="book-pages" type="number" placeholder="1">
+                        <i class="fas fa-check-circle"></i>
+                        <i class="fas fa-exclamation-circle"></i>
+                        <i class="fas fa-book-open"></i>
+                        <small>Error</small>
                     </div>
-                    <div class="input" id="read">
-                        <label for="isRead">Read?</label>
-                        <input type="checkbox" name="isRead" id="checkmark">
+                    <div class="form-control" id="cover-form">
+                        <label>Book cover</label>
+                        <input id="book-cover" type="file" accept="image/jpg, image/png, image/svg">
                     </div>
-                </div>
-                <div class="add-btn">
-                    <button type="button">Add!
-                        <i class="fas fa-plus-square"></i>
-                    </button>
-                </div>
+                    <div id="read-form">
+                        <label>Have you read it?</label>
+                        <input id="checkmark" type="checkbox">
+                    </div>
+                    <button>Add my book!</button>
+                </form>
             </div>
         </div>
         <!--Footer-->

@@ -14,7 +14,9 @@
     --color11: #82BF56;
 }
 
-/* Color Theme Swatches in Hex */
+* {
+    box-sizing: border-box;
+}
 
 html, body {
     padding: 0;
@@ -94,6 +96,7 @@ html, body {
     padding: 0 0.2rem;
 }
 
+#book-title-info, #book-author-info, #book-pages-info,
 #book-title, #book-author, #book-pages {
     font-weight: 700;
     color: var(--color8);
@@ -102,7 +105,7 @@ html, body {
 .book-card #book-img {
     transition: opacity 1s;
     width: 100%;
-    height: 18rem
+    height: 100%
 }
 
 .book-card:hover #book-img {
@@ -115,7 +118,8 @@ html, body {
 }
 
 #checkmark {
-    margin-left: 0.4rem;
+    margin: 0;
+    border: 2px solid var(--color1);
     cursor: pointer;
 }
 
@@ -167,16 +171,18 @@ html, body {
     width: 4rem;
     height: 4rem;
     bottom: 5rem;
-    right: 1.5rem;
+    right: 1rem;
     background-color: var(--color11);
     color: var(--color10);
     border-radius: 2rem;
     text-align: center;
     box-shadow: 0 0.3rem 1rem 0.1rem rgba(25, 33, 39, 0.5), 0 6px 20px 0 rgba(38, 48, 58, 0.5);
+    animation: rotationReverse 1s;
 }
 
 .float:hover {
     animation: rotation 1s;
+    animation-fill-mode: forwards;
 }
 
 .float-btn {
@@ -186,10 +192,19 @@ html, body {
 
 @keyframes rotation {
     from {
-        transform: rotate(0deg);
+        transform: rotate(0deg) scale(1);
     }
     to {
-        transform: rotate(360deg);
+        transform: rotate(360deg) scale(0.7);
+    }
+}
+
+@keyframes rotationReverse {
+    from {
+        transform: rotate(360deg) scale(0.7);
+    }
+    to {
+        transform: rotate(0deg) scale(1);
     }
 }
 
@@ -205,74 +220,159 @@ html, body {
     top: 0;
     width: 100%;
     height: 100%;
+    min-height: 100vh;
     overflow: auto;
+    margin: 0;
     background-color: rgba(0, 0, 0, 0.3);
 }
 
-.modal {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    border: 1px solid black;
-    background-color: #02734A;
-    color: var(--color1);
+.form-container {
+    box-shadow: 0 0.2rem 0.3rem rgba(0, 0, 0, 0.3);
+    border-radius: 0.2rem;
+    background-color: var(--color10);
+    overflow: hidden;
+    width: 32rem;
+    max-width: 100%;
+    margin: 0 1rem;
 }
 
-.modal-header {
+.form-header {
     display: flex;
-    justify-content: center;
     align-items: center;
     gap: 1rem;
-    font-size: 1.3rem;
+    background-color: var(--color2);
+    color: var(--color1);
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid var(--color9);
+}
+
+.form-header h2 {
+    font-weight: 900;
+    margin: 0;
+}
+
+.fa-book {
+    font-size: 1.8rem;
+}
+
+.form {
+    padding: 2rem;
+}
+
+.form-control {
+    position: relative;
+    margin-bottom: 0.3rem;
+    padding-bottom: 1rem;
+}
+
+#read-form, #cover-form {
+    padding-bottom: 0;
+}
+
+#read-form {
+    margin-bottom: 1.5rem;
+}
+
+#read-form label {
+    font-weight: 700;
+    margin-right: 0.5rem;
+}
+
+.form-control label {
+    display: inline-block;
+    font-weight: 900;
+    margin-bottom: 0.3rem;
+}
+
+.form-control input {
+    border: 2px solid var(--color9);
+    border-radius: 4px;
+    display: block;
+    width: 100%;
+    padding: 0.5rem;
+    font-size: 1rem;
+    font-family: inherit;
+}
+
+.form-control.success input {
+    border-color: var(--color11);
+}
+
+.form-control.error input {
+    border-color: var(--color5);
+}
+
+.form-control i {
+    visibility: hidden;
+    position: absolute;
+    color: var(--color8);
+    top: 2.7rem;
+    right: 1rem;
+}
+
+.form-control i.fa-font, .form-control i.fa-user, .form-control i.fa-book-open {
+    visibility: visible;
+}
+
+.form-control.error i.fa-font, .form-control.success i.fa-font,
+.form-control.error i.fa-user, .form-control.success i.fa-user,
+.form-control.error i.fa-book-open, .form-control.success i.fa-book-open {
+    visibility: hidden;
+}
+
+.form-control.success i.fa-check-circle {
+    visibility: visible;
     color: var(--color11);
 }
 
-.modal-header #add-square {
-    font-size: 2rem;
+.form-control.error i.fa-exclamation-circle {
+    visibility: visible;
+    color: var(--color5);
 }
 
-.modal-header h2 {
-    margin: 0;
-    padding-bottom: 0.4rem;
+.form-control small {
+    visibility: hidden;
+    color: var(--color5);
+    font-weight: 900;
+    position: absolute;
+    bottom: -0.15rem;
+    left: 0;
 }
 
-.new-book {
-    display: flex;
-    flex-direction: column;
-    flex: 1 0 auto;
-    background-color: var(--color10);
-    gap: 1rem;
-    padding: 1rem;
+.form-control.error small {
+    visibility: visible;
 }
 
-.input {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 1.2rem;
-    gap: 1rem;
+.form button {
+    background-color: #A7B741;
+    border: 2px solid #A7B741;
+    color: var(--color1);
+    font-family: inherit;
+    font-size: 1.3rem;
+    font-weight: 900;
+    cursor: pointer;
+    border-radius: 1rem;
+    padding: 0.6rem;
+    display: block;
+    width: 100%;
 }
 
-#pages, #read {
-    align-self: flex-start;
-}
-
-.add-btn {
-    display: flex;
-    align-self: center;
-    margin: 0.3rem 0;
-}
-
-.add-btn button:hover {
+.form button:hover {
     color: var(--color10);
 }
 
-.add-btn button {
-    color: var(--color11);
-    background-color: transparent;
-    cursor: pointer;
-    border: none;
-    font-size: 1.5rem;
+/* Remove input arrows */
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
 }
 
 /* Footer */
