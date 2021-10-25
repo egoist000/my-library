@@ -1,3 +1,4 @@
+const READ_STATUS = ["reading", "not-read", "read"];
 const modal = document.querySelector(".modal-container");
 const addFloatBtn = document.getElementById("add-btn");
 
@@ -6,6 +7,8 @@ const addBookForm = document.getElementById("add-book-form");
 const bookTitle = document.getElementById("book-title");
 const bookAuthor = document.getElementById("book-author");
 const bookPages = document.getElementById("book-pages");
+
+const statusMsg = document.getElementById("status-msg")
 
 
 let myLibrary = [];
@@ -27,6 +30,27 @@ function addBookToLibrary() {
 }
 
 const theHobbit = new Book("The Hobbit", "J.R.R. Tolkien", 256, true);
+
+function changeStatus(e) {
+    const parent = e.target.parentElement;
+    let index = READ_STATUS.indexOf(parent.classList.item(1)); //reading, read or not-read class
+    switch(index) {
+        case 0:
+            parent.className = "status-info not-read";
+            e.target.innerText = "Not read yet..";
+            //TODO: change read pages if user input not-read ex: 234/500 => 0/500
+            break;
+        case 1:
+            parent.className = "status-info read";
+            e.target.innerText = "Read"
+            //TODO: change read pages if user input Read ex: 234/500 => 500/500
+            break;
+        default:
+            parent.className = "status-info reading";
+            e.target.innerText = "Reading";
+            //TODO: restore previous pages if user input reading
+    }
+}
 
 function showErrorFor(input, errorMsg) {
     const formControl = input.parentElement;
@@ -84,6 +108,8 @@ function checkForm() {
         console.log(pagesInput);
     }
 }
+
+statusMsg.addEventListener("click", changeStatus);
 
 addBookForm.addEventListener("submit", (e) => {
     e.preventDefault();

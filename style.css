@@ -64,8 +64,8 @@ html, body {
 
 .book-card {
     position: relative;
-    width: 12rem;
-    height: 18rem;
+    width: 14rem;
+    height: 21rem;
     background-color: var(--color10);
     box-shadow: 0 0.3rem 1rem 0.1rem rgba(57, 74, 89, 0.5), 0 6px 20px 0 rgba(57, 74, 89, 0.5);
 }
@@ -95,33 +95,26 @@ html, body {
 }
 
 .prop, .status-info {
-    overflow: hidden;
     font-weight: 900;
     padding: 0 0.2rem;
 }
 
-.prop:hover {
-    overflow: auto;
-}
-
-#book-title-info, #book-author-info, #book-pages-info, .status-info span,
+#book-title-info, #book-author-info, #book-pages-info, .status-info span, #book-total-pages,
 #book-title, #book-author, #book-pages {
     font-weight: 700;
     color: var(--color8);
 }
 
 .status-info {
-    display: flex;
-    flex-direction: column;
-}
-
-.status-info span {
-    display: none;
-    align-self: center;
+    text-align: center;
     font-size: 1.5rem;
 }
 
-.status-info i {
+#status-msg {
+    cursor: pointer;
+}
+
+.status-info span, .status-info i {
     display: none;
 }
 
