@@ -99,8 +99,9 @@ html, body {
     padding: 0 0.2rem;
 }
 
-#book-title-info, #book-author-info, #book-pages-info, .status-info span, #book-total-pages,
-#book-title, #book-author, #book-pages {
+#book-title-info, #book-author-info, 
+#book-pages-info, .status-info span, 
+#book-total-pages {
     font-weight: 700;
     color: var(--color8);
 }
@@ -323,6 +324,7 @@ html, body {
     padding: 0.5rem;
     font-size: 1rem;
     font-family: inherit;
+    font-weight: 900;
 }
 
 .form-control.success input {

@@ -1,6 +1,7 @@
 const READ_STATUS = ["reading", "not-read", "read"];
 const modal = document.querySelector(".modal-container");
 const addFloatBtn = document.getElementById("add-btn");
+let currentModal = null;
 
 /* Add book form */
 const addBookForm = document.getElementById("add-book-form");
@@ -9,7 +10,6 @@ const bookAuthor = document.getElementById("book-author");
 const bookPages = document.getElementById("book-pages");
 
 const statusMsg = document.getElementById("status-msg")
-
 
 let myLibrary = [];
 
@@ -37,17 +37,17 @@ function changeStatus(e) {
     switch(index) {
         case 0:
             parent.className = "status-info not-read";
-            e.target.innerText = "Not read yet..";
+            e.target.textContent = "Not read yet..";
             //TODO: change read pages if user input not-read ex: 234/500 => 0/500
             break;
         case 1:
             parent.className = "status-info read";
-            e.target.innerText = "Read"
+            e.target.textContent = "Read"
             //TODO: change read pages if user input Read ex: 234/500 => 500/500
             break;
         default:
             parent.className = "status-info reading";
-            e.target.innerText = "Reading";
+            e.target.textContent = "Reading";
             //TODO: restore previous pages if user input reading
     }
 }
@@ -55,7 +55,7 @@ function changeStatus(e) {
 function showErrorFor(input, errorMsg) {
     const formControl = input.parentElement;
     const small = formControl.querySelector("small");
-    small.innerText = errorMsg;
+    small.textContent = errorMsg;
     formControl.className = "form-control error";
 }
 
@@ -109,6 +109,12 @@ function checkForm() {
     }
 }
 
+function isEscapePressed(e) {
+    if(e.key === "Escape" && currentModal !== null) {
+        currentModal.style.display = "none";
+    }
+}
+
 statusMsg.addEventListener("click", changeStatus);
 
 addBookForm.addEventListener("submit", (e) => {
@@ -118,10 +124,14 @@ addBookForm.addEventListener("submit", (e) => {
 
 addFloatBtn.addEventListener("click", () => {
     modal.style.display = "flex";
+    currentModal = modal;
 });
 
 window.addEventListener("click", (e) => {
     if(e.target === modal) {
         modal.style.display = "none";
+        currentModal = null;
     }
 });
+
+document.addEventListener("keydown", isEscapePressed);
