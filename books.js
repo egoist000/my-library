@@ -1,5 +1,5 @@
 const READ_STATUS = ["reading", "not-read", "read"];
-const modal = document.querySelector(".modal-container");
+const modalContainer = document.querySelector(".modal-container");
 const addFloatBtn = document.getElementById("add-btn");
 let currentModal = null;
 
@@ -142,12 +142,15 @@ function checkForm() {
 }
 
 function closeCurrentModal() {
-    currentModal.style.display = "none";
-    currentModal = null;
+    popModalAnimation(currentModal);
+    setTimeout(() => {        
+        currentModal.style.display = "none";
+        currentModal = null;
+    }, 300);
 }
 
 function isClickOutsideModal(e) {
-    if(e.target === modal) {
+    if(e.target === modalContainer) {
         closeCurrentModal();
     }
 }
@@ -163,6 +166,16 @@ function showPagesReadInput(e) {
     pagesReadForm.classList.toggle("no-display");
 }
 
+/* Animations */
+
+function pushModalAnimation(mod) {
+    mod.querySelector(".modal").style.transform = "scale(1)";
+}
+
+function popModalAnimation(mod) {
+    mod.querySelector(".modal").style.transform = "scale(0.001)";
+}
+
 /* Events */
 
 checkMark.addEventListener("change", showPagesReadInput)
@@ -176,9 +189,11 @@ addBookForm.addEventListener("submit", (e) => {
 
 closeModalIcon.addEventListener("click", closeCurrentModal);
 
+
 addFloatBtn.addEventListener("click", () => {
-    modal.style.display = "flex";
-    currentModal = modal;
+    modalContainer.style.display = "flex";
+    setTimeout(pushModalAnimation, 100, modalContainer);
+    currentModal = modalContainer;
 });
 
 window.addEventListener("click", isClickOutsideModal)
