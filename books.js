@@ -12,6 +12,7 @@ const bookPages = document.getElementById("book-pages");
 const pagesRead = document.getElementById("book-pages-read");
 const checkMark = document.getElementById("checkmark");
 const pagesReadForm = document.getElementById("pages-read-form");
+const closeModalIcon = document.getElementById("close-modal-icon");
 let shouldCheckPagesReadInput = false;
 
 /* ================================================== */
@@ -140,9 +141,20 @@ function checkForm() {
     }
 }
 
+function closeCurrentModal() {
+    currentModal.style.display = "none";
+    currentModal = null;
+}
+
+function isClickOutsideModal(e) {
+    if(e.target === modal) {
+        closeCurrentModal();
+    }
+}
+
 function escapeCurrentModal(e) {
     if(e.key === "Escape" && currentModal !== null) {
-        currentModal.style.display = "none";
+        closeCurrentModal()
     }
 }
 
@@ -162,16 +174,13 @@ addBookForm.addEventListener("submit", (e) => {
     checkForm();
 });
 
+closeModalIcon.addEventListener("click", closeCurrentModal);
+
 addFloatBtn.addEventListener("click", () => {
     modal.style.display = "flex";
     currentModal = modal;
 });
 
-window.addEventListener("click", (e) => {
-    if(e.target === modal) {
-        modal.style.display = "none";
-        currentModal = null;
-    }
-});
+window.addEventListener("click", isClickOutsideModal)
 
 document.addEventListener("keydown", escapeCurrentModal);

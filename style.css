@@ -276,6 +276,7 @@ html, body {
     color: var(--color1);
     padding: 1.5rem 2rem;
     border-bottom: 1px solid var(--color9);
+    position: relative;
 }
 
 .form-header h2 {
@@ -283,8 +284,17 @@ html, body {
     margin: 0;
 }
 
-.fa-book {
+.form-header .fa-book {
     font-size: 1.8rem;
+}
+
+.form-header .fa-window-close {
+    font-size: 1.8rem;
+    color: var(--color5);
+    position: absolute;
+    top: 0.2rem;
+    right: 0.2rem;
+    cursor: pointer;
 }
 
 .form {
