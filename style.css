@@ -297,12 +297,21 @@ html, body {
     padding-bottom: 1rem;
 }
 
+.form-control.no-display {
+    display: none;
+}
+
 #read-form, #cover-form {
     padding-bottom: 0;
 }
 
-#read-form {
-    margin-bottom: 1.5rem;
+#cover-form {
+    margin-top: 0.8rem;
+    margin-bottom: 0;
+}
+
+#pages-read-form {
+    margin: 0.5rem 0;
 }
 
 #read-form label {
@@ -388,6 +397,7 @@ html, body {
     padding: 0.6rem;
     display: block;
     width: 100%;
+    margin-top: 2.3rem;
 }
 
 .form button:hover {

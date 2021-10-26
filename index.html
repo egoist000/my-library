@@ -93,13 +93,21 @@
                         <i class="fas fa-book-open"></i>
                         <small>Error</small>
                     </div>
-                    <div class="form-control" id="cover-form">
-                        <label>Book cover</label>
-                        <input id="book-cover" type="file" accept="image/jpg, image/png, image/svg">
-                    </div>
                     <div id="read-form">
                         <label>Have you read it?</label>
                         <input id="checkmark" type="checkbox">
+                    </div>
+                    <div class="form-control no-display" id="pages-read-form">
+                        <label>How many pages did you read?</label>
+                        <input id="book-pages-read" type="number" placeholder="1">
+                        <i class="fas fa-check-circle"></i>
+                        <i class="fas fa-exclamation-circle"></i>
+                        <i class="fas fa-book-open"></i>
+                        <small>Error</small>
+                    </div>
+                    <div class="form-control" id="cover-form">
+                        <label>Book cover</label>
+                        <input id="book-cover" type="file" accept="image/jpg, image/png, image/svg">
                     </div>
                     <button>Add my book!</button>
                 </form>

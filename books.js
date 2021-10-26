@@ -4,12 +4,19 @@ const addFloatBtn = document.getElementById("add-btn");
 let currentModal = null;
 
 /* Add book form */
+
 const addBookForm = document.getElementById("add-book-form");
 const bookTitle = document.getElementById("book-title");
 const bookAuthor = document.getElementById("book-author");
 const bookPages = document.getElementById("book-pages");
+const pagesRead = document.getElementById("book-pages-read");
+const checkMark = document.getElementById("checkmark");
+const pagesReadForm = document.getElementById("pages-read-form");
+let shouldCheckPagesReadInput = false;
 
-const statusMsg = document.getElementById("status-msg")
+/* ================================================== */
+
+const statusMsg = document.getElementById("status-msg");
 
 let myLibrary = [];
 
@@ -68,9 +75,13 @@ function checkForm() {
     const titleInput = bookTitle.value;
     const authorInput = bookAuthor.value;
     const pagesInput = bookPages.value;
+
     let validTitle = false;
     let validAuthor = false;
     let validPages = false;
+    let validPagesRead = false;
+
+    console.log(shouldCheckPagesReadInput);
 
     if(titleInput === "") {
         showErrorFor(bookTitle, "Please insert a book title");
@@ -101,19 +112,48 @@ function checkForm() {
         showSuccessFor(bookPages);
         validPages = true;
     }
-
-    if(validTitle && validAuthor && validPages) {
+    if(shouldCheckPagesReadInput) {
+        const pagesReadInput = pagesRead.value;
+        if(pagesReadInput === "") {
+            showErrorFor(pagesRead, "Please insert the total pages you read")
+        }
+        else if(pagesInput !== "") {
+            if(pagesReadInput < 1 || pagesReadInput > pagesInput) {
+               showErrorFor(pagesRead, `Please insert a number of pages read between 1 and ${pagesInput}`); 
+            }
+            else {
+                showSuccessFor(pagesRead);
+                validPagesRead = true;
+            }
+        }
+        if(validTitle && validAuthor && validPages && validPagesRead) {
+            console.log(titleInput);
+            console.log(authorInput);
+            console.log(pagesInput);
+            console.log(pagesReadInput);
+        }
+    }
+    else if(validTitle && validAuthor && validPages) {
         console.log(titleInput);
         console.log(authorInput);
         console.log(pagesInput);
     }
 }
 
-function isEscapePressed(e) {
+function escapeCurrentModal(e) {
     if(e.key === "Escape" && currentModal !== null) {
         currentModal.style.display = "none";
     }
 }
+
+function showPagesReadInput(e) {
+    shouldCheckPagesReadInput = !shouldCheckPagesReadInput;
+    pagesReadForm.classList.toggle("no-display");
+}
+
+/* Events */
+
+checkMark.addEventListener("change", showPagesReadInput)
 
 statusMsg.addEventListener("click", changeStatus);
 
@@ -134,4 +174,4 @@ window.addEventListener("click", (e) => {
     }
 });
 
-document.addEventListener("keydown", isEscapePressed);
+document.addEventListener("keydown", escapeCurrentModal);
