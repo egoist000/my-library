@@ -137,7 +137,8 @@ html, body {
 .book-card #book-img {
     transition: opacity 1s;
     width: 100%;
-    height: 100%
+    height: 100%;
+    user-select: none;
 }
 
 .book-card:hover #book-img {
