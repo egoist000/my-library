@@ -115,8 +115,46 @@
             </div>
         </div>
         <!--Modal confirm-->
-        <div>
-            
+        <div class="modal-container" style="display: flex;">
+            <div class="modal" style="transform: scale(1);">
+                <div class="form-header">
+                    <h2>Create your cover</h2>
+                    <i class="fas fa-eye" style="font-size: 1.8rem;"></i>
+                    <i class="fas fa-window-close" id="close-modal-icon"></i>
+                </div>
+                <div class="preview">
+                    <canvas id="preview-book-cover">
+                        Your browser doesn't support canvas
+                    </canvas>
+                </div>
+                <div class="color-customization">
+                    <div class="customize-cover">
+                        <label>Cover color</label>
+                        <input type="color">
+                    </div>
+                    <div class="customize-cover">
+                        <label>Text color</label>
+                        <input type="color">
+                    </div>
+                    <div class="customize-cover">
+                        <label>Decoration color</label>
+                        <input type="color">
+                    </div>
+                </div>
+                <div class="theme-container">
+                    <label>Select a theme:</label>
+                    <select id="themes">
+                        <option value="simple">Simple</option>
+                        <option value="vintage">Vintage</option>
+                        <option value="modern">Modern</option>
+                    </select>
+                </div>
+                <div class="btn-container">
+                    <button id="customize-cover-btn">
+                        Add my cover!
+                    </button>
+                </div>
+            </div>
         </div>
         <!--Footer-->
         <div class="footer">

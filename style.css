@@ -431,6 +431,65 @@ input[type=number] {
   -moz-appearance: textfield;
 }
 
+/* Create book cover modal */
+
+.preview {
+    text-align: center;
+}
+
+#preview-book-cover {
+    margin: 1rem;
+    width: 12rem;
+    height: 18rem;
+    border: 1px solid var(--color1);
+    box-shadow: 0 0.3rem 1rem 0.1rem rgba(57, 74, 89, 0.5), 0 6px 20px 0 rgba(57, 74, 89, 0.5);
+}
+
+.color-customization {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    padding: 1rem 1.5rem 1rem;
+    justify-content: center;
+}
+
+.customize-cover {
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: center;
+    margin-bottom: 1rem;
+    font-size: 1.3rem;
+    color: var(--color1);
+}
+
+.theme-container {
+    text-align: center;
+    font-size: 1.5rem;
+    color: var(--color1);
+}
+
+#customize-cover-btn {
+    background-color: #A7B741;
+    border: 2px solid #A7B741;
+    color: var(--color1);
+    font-family: inherit;
+    font-size: 1.3rem;
+    font-weight: 900;
+    cursor: pointer;
+    border-radius: 1rem;
+    padding: 0.6rem;
+    display: block;
+    width: 100%;
+    margin-top: 1.5rem;
+}
+
+#customize-cover-btn:hover {
+    color: var(--color10);
+}
+
+.btn-container {
+    padding: 1rem;
+}
+
 /* Footer */
 
 .footer {
