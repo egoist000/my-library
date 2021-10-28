@@ -19,6 +19,12 @@ let shouldCheckPagesReadInput = false;
 
 const statusMsg = document.getElementById("status-msg");
 
+const coverCanvas = document.getElementById("preview-book-cover");
+const coverColorInputs = document.querySelectorAll(".customize-cover input");
+const coverThemes = document.getElementById("themes");
+coverCanvas.width = 192;
+coverCanvas.height = 288;
+
 let myLibrary = [];
 
 function Book(title, author, numberOfPages, isRead) {
@@ -166,6 +172,100 @@ function showPagesReadInput(e) {
     pagesReadForm.classList.toggle("no-display");
 }
 
+function drawSimpleTheme(bgColor = "rgb(255, 255, 255)", decorationColor = "rgb(0, 0, 0)", 
+    textColor = "rgb(255, 255, 255)") {
+    if(coverCanvas.getContext) {
+        let ctx = coverCanvas.getContext("2d");
+        ctx.clearRect(0, 0, 192, 288);
+        ctx.fillStyle = bgColor;
+        ctx.fillRect(0, 0, 192, 288);
+        ctx.fillStyle = decorationColor;
+        ctx.fillRect(0, 104, 192, 80);
+        ctx.fillStyle = textColor;
+        ctx.font = "16px serif";
+        ctx.textAlign = "center";
+        ctx.fillText("The hobbit", 96, 150, 180);
+    }
+
+}
+
+function drawModernTheme(bgColor = "rgb(255, 255, 255)", decorationColor = "rgb(0, 0, 0)", 
+    textColor = "rgb(255, 255, 255)") {
+    if(coverCanvas.getContext) {
+        let ctx = coverCanvas.getContext("2d");
+        ctx.clearRect(0, 0, 192, 288);
+        ctx.fillStyle = bgColor;
+        ctx.fillRect(0, 0, 192, 288);
+        ctx.fillStyle = decorationColor;
+        ctx.beginPath();
+        ctx.arc(0, 0, 50, 0, 1.5*Math.PI);
+        ctx.moveTo(192, 0);
+        ctx.arc(192, 0, 50, 0, 1.5*Math.PI);
+        ctx.moveTo(0, 288);
+        ctx.arc(0, 288, 50, 1.5*Math.PI, 0.5*Math.PI);
+        ctx.moveTo(192, 288);
+        ctx.arc(192, 288, 50, Math.PI, 0);
+        ctx.fill();
+        ctx.fillStyle = textColor;
+        ctx.font = "16px serif";
+        ctx.textAlign = "center";
+        ctx.fillText("The hobbit", 96, 150, 180);
+    }
+}
+
+function drawVintageTheme(bgColor = "rgb(255, 255, 255)", decorationColor = "rgb(0, 0, 0)", 
+    textColor = "rgb(255, 255, 255)") {
+    if(coverCanvas.getContext) {
+        let ctx = coverCanvas.getContext("2d");
+        ctx.clearRect(0, 0, 192, 288);
+        ctx.fillStyle = bgColor;
+        ctx.fillRect(0, 0, 192, 288);
+        ctx.fillStyle = decorationColor;
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.lineTo(50, 0);
+        ctx.lineTo(0, 50);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.moveTo(0, 288);
+        ctx.lineTo(50, 288);
+        ctx.lineTo(0, 238);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.moveTo(192, 288);
+        ctx.lineTo(142, 288);
+        ctx.lineTo(192, 238);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.moveTo(192, 0);
+        ctx.lineTo(141, 0);
+        ctx.lineTo(192, 50);
+        ctx.fill();
+        ctx.fillStyle = textColor;
+        ctx.font = "16px serif";
+        ctx.textAlign = "center";
+        ctx.fillText("The hobbit", 96, 150, 180);
+    }
+
+}
+
+function getThemeAndDraw() {
+    let bgColor = document.getElementById("bg-cover-color").value
+    let textColor = document.getElementById("text-cover-color").value
+    let decorationColor = document.getElementById("decoration-cover-color").value
+    let theme = coverThemes.value;
+    switch(theme) {
+        case "vintage":
+            drawVintageTheme(bgColor, decorationColor, textColor);
+            break;
+        case "modern":
+            drawModernTheme(bgColor, decorationColor, textColor);
+            break;
+        default:
+            drawSimpleTheme(bgColor, decorationColor, textColor);
+    }
+}
+
 /* Animations */
 
 function pushModalAnimation(mod) {
@@ -189,7 +289,6 @@ addBookForm.addEventListener("submit", (e) => {
 
 closeModalIcon.addEventListener("click", closeCurrentModal);
 
-
 addFloatBtn.addEventListener("click", () => {
     modalContainer.style.display = "flex";
     setTimeout(pushModalAnimation, 100, modalContainer);
@@ -199,3 +298,9 @@ addFloatBtn.addEventListener("click", () => {
 window.addEventListener("click", isClickOutsideModal)
 
 document.addEventListener("keydown", escapeCurrentModal);
+
+coverColorInputs.forEach(colorInput => {
+    colorInput.addEventListener("change", getThemeAndDraw);
+});
+
+coverThemes.addEventListener("change", getThemeAndDraw);
