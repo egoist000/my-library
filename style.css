@@ -394,6 +394,10 @@ html, body {
     left: 0;
 }
 
+#file-error {
+    bottom: -1.15rem;
+}
+
 .form-control.error small {
     visibility: visible;
 }
@@ -526,10 +530,4 @@ input[type=number] {
     position: relative;
     animation-name: githubAnimation;
     animation-duration: 2s;
-}
-
-@media only screen and (max-width: 480px) {
-    html {
-        font-size: 12px;
-    }
 }

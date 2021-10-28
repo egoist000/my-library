@@ -11,8 +11,9 @@ const bookAuthor = document.getElementById("book-author");
 const bookPages = document.getElementById("book-pages");
 const pagesRead = document.getElementById("book-pages-read");
 const checkMark = document.getElementById("checkmark");
+const bookCover = document.getElementById("book-cover");
 const pagesReadForm = document.getElementById("pages-read-form");
-const closeModalIcon = document.getElementById("close-modal-icon");
+const closeModalIcons = document.querySelectorAll(".close-modal-icon");
 let shouldCheckPagesReadInput = false;
 
 /* ================================================== */
@@ -78,34 +79,29 @@ function showSuccessFor(input) {
     formControl.className = "form-control success"
 }
 
-function checkForm() {
-    const titleInput = bookTitle.value;
-    const authorInput = bookAuthor.value;
-    const pagesInput = bookPages.value;
-
-    let validTitle = false;
-    let validAuthor = false;
-    let validPages = false;
-    let validPagesRead = false;
-
-    console.log(shouldCheckPagesReadInput);
-
+function checkTitleInput(titleInput) {
     if(titleInput === "") {
         showErrorFor(bookTitle, "Please insert a book title");
+        return false;
     }
     else {
         showSuccessFor(bookTitle);
-        validTitle = true;
+        return true;
     }
+}
 
+function checkAuthorInput(authorInput) {
     if(authorInput === "") {
         showErrorFor(bookAuthor, "Please insert an Author for your book");
+        return false;
     }
     else {
         showSuccessFor(bookAuthor);
-        validAuthor = true;
+        return true;
     }
+}
 
+function checkPagesInput(pagesInput) {
     if(pagesInput === "") {
         showErrorFor(bookPages, "Please insert the total pages of your book");
     }
@@ -117,33 +113,93 @@ function checkForm() {
     }
     else {
         showSuccessFor(bookPages);
-        validPages = true;
+        return true;
     }
+    return false;
+}
+
+function checkPagesReadInput(pagesReadInput, pagesInput) {
+    if(pagesReadInput === "") {
+        showErrorFor(pagesRead, "Please insert the total pages you read")
+    }
+    else if(pagesInput !== "") {
+        if(pagesReadInput < 1 || pagesReadInput > pagesInput) {
+           showErrorFor(pagesRead, `Please insert a number of pages read between 1 and ${pagesInput}`); 
+        }
+        else {
+            showSuccessFor(pagesRead);
+            return true;
+        }
+    }
+    return false;
+}
+
+function checkFileInput(fileInput) {
+    if(fileInput !== undefined) {
+        console.log(fileInput.size);
+        if(fileInput.size > 3072*Math.pow(10,3)) {
+            showErrorFor(bookCover, "File size must be less than 3Mb");
+            return false;
+        }
+        else {
+            showSuccessFor(bookCover);
+            return true;
+        }
+    }
+    return false;
+}
+
+function checkForm() {
+    const titleInput = bookTitle.value;
+    const authorInput = bookAuthor.value;
+    const pagesInput = bookPages.value;
+    const pagesReadInput = pagesRead.value;
+    const fileInput = bookCover.files[0];
+
+    let validTitle = checkTitleInput(titleInput);
+    let validFileAndNotUndefined = checkFileInput(fileInput);
+    let validAuthor = checkAuthorInput(authorInput);
+    let validPages = checkPagesInput(pagesInput);
+
     if(shouldCheckPagesReadInput) {
-        const pagesReadInput = pagesRead.value;
-        if(pagesReadInput === "") {
-            showErrorFor(pagesRead, "Please insert the total pages you read")
-        }
-        else if(pagesInput !== "") {
-            if(pagesReadInput < 1 || pagesReadInput > pagesInput) {
-               showErrorFor(pagesRead, `Please insert a number of pages read between 1 and ${pagesInput}`); 
-            }
-            else {
-                showSuccessFor(pagesRead);
-                validPagesRead = true;
-            }
-        }
+        let validPagesRead = checkPagesReadInput(pagesReadInput, pagesRead);
         if(validTitle && validAuthor && validPages && validPagesRead) {
-            console.log(titleInput);
-            console.log(authorInput);
-            console.log(pagesInput);
-            console.log(pagesReadInput);
+            if(validFileAndNotUndefined) { //Create book
+                console.log(titleInput);
+                console.log(authorInput);
+                console.log(pagesInput);
+                console.log(pagesReadInput);
+                console.log(fileInput);
+                console.log("I create book");
+            }
+            else { //Push cover creation modal
+                console.log(titleInput);
+                console.log(authorInput);
+                console.log(pagesInput);
+                console.log(pagesReadInput);
+                console.log("I push cover creation modal");
+                currentModal = document.getElementById("cover-creation-modal");
+                console.log(currentModal);
+                currentModal.style.display = "flex";
+                pushModalAnimation(currentModal);
+            }
         }
     }
     else if(validTitle && validAuthor && validPages) {
-        console.log(titleInput);
-        console.log(authorInput);
-        console.log(pagesInput);
+        if(validFileAndNotUndefined) { // create book
+            console.log(fileInput);
+            console.log("I create book");
+        }
+        else { //Push cover creation modal
+            console.log(titleInput);
+            console.log(authorInput);
+            console.log(pagesInput);
+            console.log("I push cover creation modal");
+            currentModal.style.display = "none";
+            currentModal = document.getElementById("cover-creation-modal");
+            currentModal.style.display = "flex";
+            pushModalAnimation(currentModal);
+        }
     }
 }
 
@@ -287,7 +343,9 @@ addBookForm.addEventListener("submit", (e) => {
     checkForm();
 });
 
-closeModalIcon.addEventListener("click", closeCurrentModal);
+closeModalIcons.forEach(closeIcons => {
+    closeIcons.addEventListener("click", closeCurrentModal);
+});
 
 addFloatBtn.addEventListener("click", () => {
     modalContainer.style.display = "flex";
