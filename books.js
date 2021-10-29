@@ -23,8 +23,10 @@ const statusMsg = document.getElementById("status-msg");
 const coverCanvas = document.getElementById("preview-book-cover");
 const coverColorInputs = document.querySelectorAll(".customize-cover input");
 const coverThemes = document.getElementById("themes");
-coverCanvas.width = 192;
-coverCanvas.height = 288;
+const customizeCoverBtn = document.getElementById("customize-cover-btn");
+let currentBookTitle = "";
+coverCanvas.width = 224; //192 + 32
+coverCanvas.height = 336; //288 + 48
 
 let myLibrary = [];
 
@@ -108,7 +110,7 @@ function checkPagesInput(pagesInput) {
     else if(pagesInput < 0) {
         showErrorFor(bookPages, "Please insert positive number for book pages");
     }
-    else if(pagesInput == 0 || pagesInput > 99999) {
+    else if(pagesInput === 0 || pagesInput > 99999) {
         showErrorFor(bookPages, "Please select a number between 1 and 99999");
     }
     else {
@@ -119,11 +121,17 @@ function checkPagesInput(pagesInput) {
 }
 
 function checkPagesReadInput(pagesReadInput, pagesInput) {
+    console.log("Check pages read:");
+    console.log(pagesInput);
+    console.log(pagesReadInput);
     if(pagesReadInput === "") {
         showErrorFor(pagesRead, "Please insert the total pages you read")
     }
     else if(pagesInput !== "") {
-        if(pagesReadInput < 1 || pagesReadInput > pagesInput) {
+        if(pagesReadInput === 0) {
+           showErrorFor(pagesRead, "Please insert a number of pages read greater than 0"); 
+        }
+        else if(pagesReadInput < 1 || pagesReadInput > pagesInput) {
            showErrorFor(pagesRead, `Please insert a number of pages read between 1 and ${pagesInput}`); 
         }
         else {
@@ -152,17 +160,16 @@ function checkFileInput(fileInput) {
 function checkForm() {
     const titleInput = bookTitle.value;
     const authorInput = bookAuthor.value;
-    const pagesInput = bookPages.value;
-    const pagesReadInput = pagesRead.value;
+    const pagesInput = +bookPages.value;
+    const pagesReadInput = +pagesRead.value;
     const fileInput = bookCover.files[0];
-
     let validTitle = checkTitleInput(titleInput);
     let validFileAndNotUndefined = checkFileInput(fileInput);
     let validAuthor = checkAuthorInput(authorInput);
     let validPages = checkPagesInput(pagesInput);
 
     if(shouldCheckPagesReadInput) {
-        let validPagesRead = checkPagesReadInput(pagesReadInput, pagesRead);
+        let validPagesRead = checkPagesReadInput(pagesReadInput, pagesInput);
         if(validTitle && validAuthor && validPages && validPagesRead) {
             if(validFileAndNotUndefined) { //Create book
                 console.log(titleInput);
@@ -171,6 +178,10 @@ function checkForm() {
                 console.log(pagesReadInput);
                 console.log(fileInput);
                 console.log("I create book");
+                closeCurrentModal();
+                encodeFileInputAndSetAsCoverImg(fileInput);
+                console.log(imgCoverBase64);
+
             }
             else { //Push cover creation modal
                 console.log(titleInput);
@@ -178,10 +189,10 @@ function checkForm() {
                 console.log(pagesInput);
                 console.log(pagesReadInput);
                 console.log("I push cover creation modal");
-                currentModal = document.getElementById("cover-creation-modal");
-                console.log(currentModal);
-                currentModal.style.display = "flex";
-                pushModalAnimation(currentModal);
+                closeCurrentModal();
+                currentBookTitle = titleInput;
+                let coverCreationModal = setCoverCreationModal();
+                openModalAndSetCurrent(coverCreationModal);
             }
         }
     }
@@ -189,30 +200,71 @@ function checkForm() {
         if(validFileAndNotUndefined) { // create book
             console.log(fileInput);
             console.log("I create book");
+            closeCurrentModal();
+            encodeFileInputAndSetAsCoverImg(fileInput);
+            console.log(imgCoverBase64);
         }
         else { //Push cover creation modal
             console.log(titleInput);
             console.log(authorInput);
             console.log(pagesInput);
             console.log("I push cover creation modal");
-            currentModal.style.display = "none";
-            currentModal = document.getElementById("cover-creation-modal");
-            currentModal.style.display = "flex";
-            pushModalAnimation(currentModal);
+            closeCurrentModal();
+            currentBookTitle = titleInput;
+            let coverCreationModal = setCoverCreationModal();
+            openModalAndSetCurrent(coverCreationModal);
         }
+    }
+}
+
+function encodeFileInputAndSetAsCoverImg(inputFile) {
+    let fileReader = new FileReader();
+    fileReader.readAsDataURL(inputFile);
+    fileReader.onload = function() {
+        console.log(fileReader.result);
+        //Set as new book card img src
+    }
+    fileReader.onerror = function() {
+        alert(fileReader.error);
+    }
+}
+
+function resetModalForm(modal) {
+    let form = modal.querySelector("form");
+    if(form !== null) {
+        if(form.id === "add-book-form") {
+            shouldCheckPagesReadInput = false;
+            let inputs = form.querySelectorAll(".form-control");
+            inputs.forEach(input => {
+                if(input.id === "pages-read-form") {
+                    input.classList.add("no-display");
+                }
+                input.classList.remove("error", "success");
+            });
+        }
+        form.reset();
     }
 }
 
 function closeCurrentModal() {
     popModalAnimation(currentModal);
+    resetModalForm(currentModal);
     setTimeout(() => {        
         currentModal.style.display = "none";
         currentModal = null;
     }, 300);
 }
 
+function openModalAndSetCurrent(mod) {
+    mod.style.display = "flex";
+    setTimeout(() => {        
+        currentModal = mod;
+        pushModalAnimation(mod);
+    }, 300);
+}
+
 function isClickOutsideModal(e) {
-    if(e.target === modalContainer) {
+    if(e.target.classList.contains("modal-container")) {
         closeCurrentModal();
     }
 }
@@ -228,79 +280,121 @@ function showPagesReadInput(e) {
     pagesReadForm.classList.toggle("no-display");
 }
 
-function drawSimpleTheme(bgColor = "rgb(255, 255, 255)", decorationColor = "rgb(0, 0, 0)", 
+function setCoverCreationModal() {
+    let creationCoverModal = document.getElementById("cover-creation-modal");
+    drawSimpleTheme(currentBookTitle);
+    return creationCoverModal;
+}
+
+function wrapText(context, text, x, y, maxWidth, lineHeight) {
+    let words = text.split(" ");
+    console.table(words);
+    let line = "";
+    for(let i = 0; i < words.length; i++) {
+        let testLine = line + words[i] + " ";
+        let testWidth = context.measureText(testLine).width;
+        console.log(testWidth);
+        console.log(maxWidth);
+        if(testWidth > maxWidth && i > 0) {
+            context.fillText(line, x, y);
+            line = words[i] + " ";
+            y += lineHeight;
+        }
+        else {
+            line = testLine;
+        }
+    }
+    context.fillText(line, x, y);
+}
+
+function drawSimpleTheme(bookTitle = "Title", bgColor = "rgb(255, 255, 255)", decorationColor = "rgb(0, 0, 0)", 
     textColor = "rgb(255, 255, 255)") {
     if(coverCanvas.getContext) {
         let ctx = coverCanvas.getContext("2d");
-        ctx.clearRect(0, 0, 192, 288);
+        ctx.clearRect(0, 0, 224, 336);
         ctx.fillStyle = bgColor;
-        ctx.fillRect(0, 0, 192, 288);
+        ctx.fillRect(0, 0, 224, 336);
         ctx.fillStyle = decorationColor;
-        ctx.fillRect(0, 104, 192, 80);
+        ctx.fillRect(0, 128, 224, 80);
         ctx.fillStyle = textColor;
-        ctx.font = "16px serif";
+        ctx.font = "18px serif";
         ctx.textAlign = "center";
-        ctx.fillText("The hobbit", 96, 150, 180);
+        if(bookTitle.length >= 22) {
+            wrapText(ctx, bookTitle, 112, 158, 215, 20);
+        }
+        else {
+            ctx.fillText(bookTitle, 112, 178, 215);
+        }
     }
 
 }
 
-function drawModernTheme(bgColor = "rgb(255, 255, 255)", decorationColor = "rgb(0, 0, 0)", 
+function drawModernTheme(bookTitle = "Title", bgColor = "rgb(255, 255, 255)", decorationColor = "rgb(0, 0, 0)", 
     textColor = "rgb(255, 255, 255)") {
     if(coverCanvas.getContext) {
         let ctx = coverCanvas.getContext("2d");
-        ctx.clearRect(0, 0, 192, 288);
+        ctx.clearRect(0, 0, 224, 336);
         ctx.fillStyle = bgColor;
-        ctx.fillRect(0, 0, 192, 288);
+        ctx.fillRect(0, 0, 224, 336);
         ctx.fillStyle = decorationColor;
         ctx.beginPath();
-        ctx.arc(0, 0, 50, 0, 1.5*Math.PI);
+        ctx.arc(0, 0, 70, 0, 1.5*Math.PI);
         ctx.moveTo(192, 0);
-        ctx.arc(192, 0, 50, 0, 1.5*Math.PI);
-        ctx.moveTo(0, 288);
-        ctx.arc(0, 288, 50, 1.5*Math.PI, 0.5*Math.PI);
-        ctx.moveTo(192, 288);
-        ctx.arc(192, 288, 50, Math.PI, 0);
+        ctx.arc(224, 0, 70, 0, 1.5*Math.PI);
+        ctx.moveTo(0, 366);
+        ctx.arc(0, 336, 70, 1.5*Math.PI, 0.5*Math.PI);
+        ctx.moveTo(224, 336);
+        ctx.arc(224, 336, 70, Math.PI, 0);
         ctx.fill();
         ctx.fillStyle = textColor;
-        ctx.font = "16px serif";
+        ctx.font = "18px serif";
         ctx.textAlign = "center";
-        ctx.fillText("The hobbit", 96, 150, 180);
+        if(bookTitle.length >= 22) {
+            wrapText(ctx, bookTitle, 112, 158, 215, 20);
+        }
+        else {
+            ctx.fillText(bookTitle, 112, 178, 215);
+        }
     }
 }
 
-function drawVintageTheme(bgColor = "rgb(255, 255, 255)", decorationColor = "rgb(0, 0, 0)", 
+function drawVintageTheme(bookTitle = "Title", bgColor = "rgb(255, 255, 255)", decorationColor = "rgb(0, 0, 0)", 
     textColor = "rgb(255, 255, 255)") {
     if(coverCanvas.getContext) {
         let ctx = coverCanvas.getContext("2d");
-        ctx.clearRect(0, 0, 192, 288);
+        ctx.clearRect(0, 0, 224, 336);
         ctx.fillStyle = bgColor;
-        ctx.fillRect(0, 0, 192, 288);
+        ctx.fillRect(0, 0, 224, 336);
         ctx.fillStyle = decorationColor;
         ctx.beginPath();
         ctx.moveTo(0, 0);
-        ctx.lineTo(50, 0);
-        ctx.lineTo(0, 50);
+        ctx.lineTo(70, 0);
+        ctx.lineTo(0, 70);
         ctx.fill();
         ctx.beginPath();
-        ctx.moveTo(0, 288);
-        ctx.lineTo(50, 288);
-        ctx.lineTo(0, 238);
+        ctx.moveTo(0, 336);
+        ctx.lineTo(70, 336);
+        ctx.lineTo(0, 266);
         ctx.fill();
         ctx.beginPath();
-        ctx.moveTo(192, 288);
-        ctx.lineTo(142, 288);
-        ctx.lineTo(192, 238);
+        ctx.moveTo(224, 336);
+        ctx.lineTo(154, 336);
+        ctx.lineTo(224, 266);
         ctx.fill();
         ctx.beginPath();
-        ctx.moveTo(192, 0);
-        ctx.lineTo(141, 0);
-        ctx.lineTo(192, 50);
+        ctx.moveTo(224, 0);
+        ctx.lineTo(154, 0);
+        ctx.lineTo(224, 70);
         ctx.fill();
         ctx.fillStyle = textColor;
-        ctx.font = "16px serif";
+        ctx.font = "18px serif";
         ctx.textAlign = "center";
-        ctx.fillText("The hobbit", 96, 150, 180);
+        if(bookTitle.length >= 22) {
+            wrapText(ctx, bookTitle, 112, 158, 215, 20);
+        }
+        else {
+            ctx.fillText(bookTitle, 112, 178, 215);
+        }
     }
 
 }
@@ -312,14 +406,19 @@ function getThemeAndDraw() {
     let theme = coverThemes.value;
     switch(theme) {
         case "vintage":
-            drawVintageTheme(bgColor, decorationColor, textColor);
+            drawVintageTheme(currentBookTitle, bgColor, decorationColor, textColor);
             break;
         case "modern":
-            drawModernTheme(bgColor, decorationColor, textColor);
+            drawModernTheme(currentBookTitle, bgColor, decorationColor, textColor);
             break;
         default:
-            drawSimpleTheme(bgColor, decorationColor, textColor);
+            drawSimpleTheme(currentBookTitle, bgColor, decorationColor, textColor);
     }
+}
+
+function saveCoverCanvas() {
+    let coverCanvasBase64 = coverCanvas.toDataURL();
+    console.log(coverCanvasBase64);
 }
 
 /* Animations */
@@ -362,3 +461,5 @@ coverColorInputs.forEach(colorInput => {
 });
 
 coverThemes.addEventListener("change", getThemeAndDraw);
+
+customizeCoverBtn.addEventListener("click", saveCoverCanvas);

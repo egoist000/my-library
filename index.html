@@ -80,7 +80,7 @@
                     </div>
                     <div class="form-control">
                         <label>Author</label>
-                        <input id="book-author" type="text" placeholder="An awesome author" maxlength="42">
+                        <input id="book-author" type="text" placeholder="An awesome author" maxlength="32">
                         <i class="fas fa-check-circle"></i>
                         <i class="fas fa-exclamation-circle"></i>
                         <i class="fas fa-user"></i>
@@ -128,28 +128,30 @@
                         Your browser doesn't support canvas
                     </canvas>
                 </div>
-                <div class="color-customization">
-                    <div class="customize-cover">
-                        <label>Cover color</label>
-                        <input type="color" id="bg-cover-color">
+                <form>
+                    <div class="color-customization">
+                        <div class="customize-cover">
+                            <label>Cover color</label>
+                            <input type="color" id="bg-cover-color">
+                        </div>
+                        <div class="customize-cover">
+                            <label>Text color</label>
+                            <input type="color" id="text-cover-color">
+                        </div>
+                        <div class="customize-cover">
+                            <label>Decoration color</label>
+                            <input type="color" id="decoration-cover-color">
+                        </div>
                     </div>
-                    <div class="customize-cover">
-                        <label>Text color</label>
-                        <input type="color" id="text-cover-color">
+                    <div class="theme-container">
+                        <label>Select a theme:</label>
+                        <select id="themes">
+                            <option value="simple">Simple</option>
+                            <option value="vintage">Vintage</option>
+                            <option value="modern">Modern</option>
+                        </select>
                     </div>
-                    <div class="customize-cover">
-                        <label>Decoration color</label>
-                        <input type="color" id="decoration-cover-color">
-                    </div>
-                </div>
-                <div class="theme-container">
-                    <label>Select a theme:</label>
-                    <select id="themes">
-                        <option value="simple">Simple</option>
-                        <option value="vintage">Vintage</option>
-                        <option value="modern">Modern</option>
-                    </select>
-                </div>
+                </form>
                 <div class="btn-container">
                     <button id="customize-cover-btn">
                         Add my cover!
