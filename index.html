@@ -22,35 +22,35 @@
             <h1>My Library</h1>
         </div>
         <!--Books-->
-        <div class="books-container">
+        <div id="books-container">
             <!--Book card-->
             <div class="book-card">
-                <img id="book-img" src="icons/TheHobbit.jpg" alt="book-img">
+                <img class="book-img" src="icons/TheHobbit.jpg" alt="book-img">
                 <div class="book-info">
                     <div class="book-prop">
                         <span class="prop">Title: 
-                            <span id="book-title-info">The Hobbit</span>
+                            <span class="book-value">The Hobbit</span>
                         </span>
                         <span class="prop">Author:
-                            <span id="book-author-info">J.R.R. Tolkien</span>
+                            <span class="book-value">J.R.R. Tolkien</span>
                         </span>
                         <span class="prop">Pages:
-                            <span id="book-pages-info">2355</span>
-                            <span id="book-total-pages">/ 5505</span>
+                            <span class="book-value">2355</span>
+                            <span class="book-value">/ 5505</span>
                         </span>
                         <span class="prop">Status:</span>
                         <div onselectstart="return false" class="status-info reading">
-                            <span id="status-msg">Reading</span>
+                            <span class="status-msg">Reading</span>
                             <i class="fas fa-book-reader"></i>
                             <i class="fas fa-book-open"></i>
                             <i class="fas fa-check-circle"></i>
                         </div>
                     </div>
                     <div class="buttons">
-                        <button id="edit" type="button">
+                        <button class="edit" type="button">
                             <i class="fas fa-pen"></i>
                         </button>
-                        <button id="delete" type="button">
+                        <button class="delete" type="button">
                             <i class="fas fa-trash"></i>
                         </button>
                     </div>

@@ -51,7 +51,7 @@ html, body {
 
 /* Books */
 
-.books-container {
+#books-container {
     display: flex;
     gap: 3.8rem;
     flex-wrap: wrap;
@@ -94,14 +94,17 @@ html, body {
     flex: 1 0 auto;
 }
 
+.prop:hover {
+    overflow: auto;
+}
+
 .prop, .status-info {
+    overflow: hidden;
     font-weight: 900;
     padding: 0 0.2rem;
 }
 
-#book-title-info, #book-author-info, 
-#book-pages-info, .status-info span, 
-#book-total-pages {
+.book-value, .status-info span {
     font-weight: 700;
     color: var(--color8);
 }
@@ -111,7 +114,7 @@ html, body {
     font-size: 1.5rem;
 }
 
-#status-msg {
+.status-msg {
     cursor: pointer;
 }
 
@@ -134,14 +137,14 @@ html, body {
     color: #72A603
 }
 
-.book-card #book-img {
+.book-card .book-img {
     transition: opacity 1s;
     width: 100%;
     height: 100%;
     user-select: none;
 }
 
-.book-card:hover #book-img {
+.book-card:hover .book-img {
     opacity: 0.1;
 }
 
@@ -168,7 +171,7 @@ html, body {
     margin-bottom: 0.5rem;
 }
 
-#edit, #delete {
+.edit, .delete {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -180,17 +183,17 @@ html, body {
     border-radius: 1.5rem;
 }
 
-#edit {
+.edit {
     background-color: #02734A;
     color: var(--color11);
 }
 
-#delete {
+.delete {
     background-color: #D91424;
     color: var(--color4);
 }
 
-#edit:hover, #delete:hover {
+.edit:hover, .delete:hover {
     transform: scale(1.1, 1.1);
     transition: transform 0.3s;
     color: white;
