@@ -286,12 +286,8 @@ function checkForm() {
                 status = "read";
             }
             if(validFileAndNotUndefined) { //Create book
-                let cover = URL.createObjectURL(fileInput);
-                let userBook = new Book(cover, titleInput, authorInput, pagesReadInput, pagesInput, status);
-                createBookCard(userBook);
-                URL.revokeObjectURL(cover);
-                closeCurrentModal();
-
+                let userBook = new Book("", titleInput, authorInput, pagesReadInput, pagesInput, status);
+                setCoverInputAndCreateBookCard(fileInput, userBook);
             }
             else { //Push cover creation modal
                 currentBook = new Book("", titleInput, authorInput, pagesReadInput, pagesInput, status);
@@ -303,11 +299,8 @@ function checkForm() {
     }
     else if(validTitle && validAuthor && validPages) {
         if(validFileAndNotUndefined) { // create book
-            let cover = URL.createObjectURL(fileInput);
-            let userBook = new Book(cover, titleInput, authorInput, 0, pagesInput, "not-read");
-            createBookCard(userBook);
-            URL.revokeObjectURL(cover);
-            closeCurrentModal();
+            let userBook = new Book("", titleInput, authorInput, 0, pagesInput, "not-read");
+            setCoverInputAndCreateBookCard(fileInput, userBook);
         }
         else { //Push cover creation modal
             currentBook = new Book("", titleInput, authorInput, 0, pagesInput, "not-read");
@@ -315,6 +308,19 @@ function checkForm() {
             let coverCreationModal = setCoverCreationModal();
             openModalAndSetCurrent(coverCreationModal);
         }
+    }
+}
+
+function setCoverInputAndCreateBookCard(inputFile, userBook) {
+    let fileReader = new FileReader();
+    fileReader.readAsDataURL(inputFile);
+    fileReader.onload = function() {
+        userBook.cover = fileReader.result;
+        createBookCard(userBook);
+        closeCurrentModal();
+    }
+    fileReader.onerror = function() {
+        alert(fileReader.error);
     }
 }
 
