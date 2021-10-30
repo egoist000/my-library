@@ -19,8 +19,6 @@ let shouldCheckPagesReadInput = false;
 
 /* ================================================== */
 
-const statusMsg = document.querySelector(".status-msg");
-
 const coverCanvas = document.getElementById("preview-book-cover");
 const coverColorInputs = document.querySelectorAll(".customize-cover input");
 const coverThemes = document.getElementById("themes");
@@ -89,7 +87,7 @@ function createBookValueProperty(book) {
     pagesProp.classList.add("prop");
     pagesProp.textContent = "Pages: ";
     pagesRead.classList.add("book-value");
-    pagesRead.textContent = `${book.pagesRead}`;
+    pagesRead.textContent = `${book.pagesRead} `;
     pagesProp.appendChild(pagesRead);
 
     /* Book pages */
@@ -277,33 +275,28 @@ function checkForm() {
     let validFileAndNotUndefined = checkFileInput(fileInput);
     let validAuthor = checkAuthorInput(authorInput);
     let validPages = checkPagesInput(pagesInput);
+    let status = "not-read";
+    let validForm = false;
 
     if(shouldCheckPagesReadInput) {
         let validPagesRead = checkPagesReadInput(pagesReadInput, pagesInput);
         if(validTitle && validAuthor && validPages && validPagesRead) {
-            let status = "reading";
+            validForm = true;
+            status = "reading";
             if(pagesInput === pagesReadInput) {
                 status = "read";
-            }
-            if(validFileAndNotUndefined) { //Create book
-                let userBook = new Book("", titleInput, authorInput, pagesReadInput, pagesInput, status);
-                setCoverInputAndCreateBookCard(fileInput, userBook);
-            }
-            else { //Push cover creation modal
-                currentBook = new Book("", titleInput, authorInput, pagesReadInput, pagesInput, status);
-                closeCurrentModal();
-                let coverCreationModal = setCoverCreationModal();
-                openModalAndSetCurrent(coverCreationModal);
             }
         }
     }
     else if(validTitle && validAuthor && validPages) {
-        if(validFileAndNotUndefined) { // create book
-            let userBook = new Book("", titleInput, authorInput, 0, pagesInput, "not-read");
-            setCoverInputAndCreateBookCard(fileInput, userBook);
+        validForm = true;
+    }
+    if(validForm) {
+        currentBook = new Book("", titleInput, authorInput, pagesReadInput, pagesInput, status);
+        if(validFileAndNotUndefined) { //Create book
+            setCoverInputAndCreateBookCard(fileInput, currentBook);
         }
         else { //Push cover creation modal
-            currentBook = new Book("", titleInput, authorInput, 0, pagesInput, "not-read");
             closeCurrentModal();
             let coverCreationModal = setCoverCreationModal();
             openModalAndSetCurrent(coverCreationModal);
@@ -531,8 +524,6 @@ function popModalAnimation(mod) {
 /* Events */
 
 checkMark.addEventListener("change", showPagesReadInput)
-
-statusMsg.addEventListener("click", changeStatus);
 
 addBookForm.addEventListener("submit", (e) => {
     e.preventDefault();
