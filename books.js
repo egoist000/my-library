@@ -299,7 +299,7 @@ function checkForm() {
         if(validFileAndNotUndefined) { //Create book
             setCoverInputAndCreateBookCard(fileInput, currentBook);
         }
-        else { //Push cover creation modal
+        else if(fileInput === undefined){ //Push cover creation modal
             closeCurrentModal();
             let coverCreationModal = setCoverCreationModal();
             openModalAndSetCurrent(coverCreationModal);
@@ -311,9 +311,9 @@ function setCoverInputAndCreateBookCard(inputFile, userBook) {
     let fileReader = new FileReader();
     fileReader.readAsDataURL(inputFile);
     fileReader.onload = function() {
+        closeCurrentModal();
         userBook.cover = fileReader.result;
         createBookCard(userBook);
-        closeCurrentModal();
     }
     fileReader.onerror = function() {
         alert(fileReader.error);
