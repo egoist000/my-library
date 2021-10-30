@@ -154,6 +154,9 @@ function createBookCard(book) {
     bookCard.appendChild(cover);
     bookCard.appendChild(bookInfoContainer);
     booksContainer.appendChild(bookCard);
+    setTimeout(() => {
+        pushBookAnimation(bookCard);
+    }, 300);
 }
 
 function changeStatus(e) {
@@ -336,8 +339,8 @@ function resetModalForm(modal) {
 
 function closeCurrentModal() {
     popModalAnimation(currentModal);
-    resetModalForm(currentModal);
     setTimeout(() => {        
+        resetModalForm(currentModal);
         currentModal.style.display = "none";
         currentModal = null;
     }, 300);
@@ -519,6 +522,14 @@ function pushModalAnimation(mod) {
 
 function popModalAnimation(mod) {
     mod.querySelector(".modal").style.transform = "scale(0.001)";
+}
+
+function pushBookAnimation(bookCard) {
+    bookCard.style.transform = "scale(1)";
+}
+
+function deleteBookAnimation(bookCard) {
+    bookCard.style.transform = "scale(0.001)";
 }
 
 /* Events */

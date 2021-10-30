@@ -68,6 +68,8 @@ html, body {
     height: 21rem;
     background-color: var(--color10);
     box-shadow: 0 0.3rem 1rem 0.1rem rgba(57, 74, 89, 0.5), 0 6px 20px 0 rgba(57, 74, 89, 0.5);
+    transform: scale(0.001);
+    transition: transform 0.3s;
 }
 
 .book-info {
@@ -388,6 +390,20 @@ html, body {
     color: var(--color5);
 }
 
+.form-control.form-control.success i.fa-check-circle,
+.form-control.error i.fa-exclamation-circle {
+    animation-name: formIconAnimation;
+    animation-duration: 0.3s;
+}
+
+@keyframes formIconAnimation {
+    0%   {transform: scale(0.01);}
+    25%  {transform: scale(0.1);}
+    50%  {transform: scale(1);}
+    75%  {transform: scale(1.5);}
+    100% {transform: scale(1);}
+}
+
 .form-control small {
     visibility: hidden;
     color: var(--color5);
@@ -522,11 +538,11 @@ input[type=number] {
 
 /* GitHub animation */
 @keyframes githubAnimation {
-    0%   {transform: scale(1, 1);}
+    0%   {transform: scale(1);}
     25%  {transform: scale(1.5, 0.8);}
     50%  {transform: scale(0.5, 1.1);}
     75%  {transform: scale(1, 0.8);}
-    100% {transform: scale(1, 1);}
+    100% {transform: scale(1);}
 }
 
 .github-logo:hover {
