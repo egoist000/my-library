@@ -1,4 +1,7 @@
-const READ_STATUS = {"reading": "Reading", "not-read": "Not read yet..", "read": "Read"};
+const READ_STATUS = {"reading": "Reading", "not-read": "Not read yet..", "read": "Read"}; //Book possible status
+
+/* Containers and add book float btn */
+
 const booksContainer = document.getElementById("books-container");
 const modalContainer = document.querySelector(".modal-container");
 const addFloatBtn = document.getElementById("add-btn");
@@ -17,7 +20,7 @@ const pagesReadForm = document.getElementById("pages-read-form");
 const closeModalIcons = document.querySelectorAll(".close-modal-icon");
 let shouldCheckPagesReadInput = false;
 
-/* ================================================== */
+/* Cover customization */
 
 const coverCanvas = document.getElementById("preview-book-cover");
 const coverColorInputs = document.querySelectorAll(".customize-cover input");
@@ -27,7 +30,7 @@ let currentBook = null;
 coverCanvas.width = 224;
 coverCanvas.height = 336;
 
-let myLibrary = [];
+let myLibrary = []; //Store books
 
 class Book {
     constructor(cover, title, author, pagesRead, pages, status) {
@@ -40,9 +43,8 @@ class Book {
     }
 }
 
-
 function addBookToLibrary() {
-
+    // TODO: to implement
 }
 
 function createBookCoverImg(book) {
@@ -156,10 +158,10 @@ function createBookCard(book) {
     booksContainer.appendChild(bookCard);
     setTimeout(() => {
         pushBookAnimation(bookCard);
-    }, 300);
+    }, 300); //Wait 3ms to show animation in order to give time to display the card
 }
 
-function changeStatus(e) {
+function changeStatus(e) { // TODO: change this function
     const parent = e.target.parentElement;
     let index = Object.keys(READ_STATUS).indexOf(parent.classList.item(1)); //reading, read or not-read class
     switch(index) {
@@ -299,7 +301,7 @@ function checkForm() {
         if(validFileAndNotUndefined) { //Create book
             setCoverInputAndCreateBookCard(fileInput, currentBook);
         }
-        else if(fileInput === undefined){ //Push cover creation modal
+        else if(fileInput === undefined){ //Push cover creation modal if cover is not provided
             closeCurrentModal();
             let coverCreationModal = setCoverCreationModal();
             openModalAndSetCurrent(coverCreationModal);
