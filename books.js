@@ -31,7 +31,7 @@ coverCanvas.width = 224;
 coverCanvas.height = 336;
 
 let myLibrary = []; //Store books
-let globalId = myLibrary.length;
+let globalId = 0; //progId;
 
 class Book {
     
@@ -55,10 +55,12 @@ function addBookToLibrary(book) {
     myLibrary.push(book);
     pushBookAnimation(createBookCard(book, globalId, true));
     globalId++;
+    //TODO: add to local storage
 }
 
 function removeBookFromLibrary(index) {
-    myLibrary.splice(index, 1);
+    delete myLibrary[index];
+    //TODO: remove from local storage
 }
 
 function displayLibrary(library) {
@@ -125,7 +127,7 @@ function createBookValueProperty(book, index) {
     statusInfo.classList.add("status-info", `${book.status}`);
     statusInfo.onselectstart = function() {return false};
     statusValue.classList.add("status-msg");
-    statusValue.textContent = `${READ_STATUS[book.status]} `;
+    statusValue.textContent = `${READ_STATUS[book.status]}`;
     statusValue.setAttribute("bookIndex", index);
     statusValue.onclick = changeStatus; //Change book status event handler
     iconReading.classList.add("fas", "fa-book-reader");
@@ -247,7 +249,7 @@ function showErrorFor(input, errorMsg) {
 
 function showSuccessFor(input) {
     const formControl = input.parentElement;
-    formControl.className = "form-control success"
+    formControl.className = "form-control success";
 }
 
 function checkTitleInput(titleInput) {
@@ -324,11 +326,11 @@ function checkFileInput(fileInput) {
 }
 
 function checkForm() {
-    const titleInput = bookTitle.value;
-    const authorInput = bookAuthor.value;
-    const pagesInput = +bookPages.value;
-    const pagesReadInput = +pagesRead.value;
-    const fileInput = bookCover.files[0];
+    let titleInput = bookTitle.value;
+    let authorInput = bookAuthor.value;
+    let pagesInput = +bookPages.value;
+    let pagesReadInput = +pagesRead.value;
+    let fileInput = bookCover.files[0];
     let validTitle = checkTitleInput(titleInput);
     let validFileAndNotUndefined = checkFileInput(fileInput);
     let validAuthor = checkAuthorInput(authorInput);
@@ -348,6 +350,7 @@ function checkForm() {
     }
     else if(validTitle && validAuthor && validPages) {
         validForm = true;
+        pagesReadInput = 0;
     }
     if(validForm) {
         currentBook = new Book("", titleInput, authorInput, pagesReadInput, pagesInput, status);
@@ -417,7 +420,7 @@ function isClickOutsideModal(e) {
 
 function escapeCurrentModal(e) {
     if(e.key === "Escape" && currentModal !== null) {
-        closeCurrentModal()
+        closeCurrentModal();
     }
 }
 
