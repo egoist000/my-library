@@ -33,19 +33,39 @@ coverCanvas.height = 336;
 let myLibrary = []; //Store books
 
 class Book {
+    
     constructor(cover, title, author, pagesRead, pages, status) {
-        this.cover     = cover, 
-        this.title     = title,
-        this.author    = author,
-        this.pagesRead = pagesRead,
-        this.pages     = pages,
-        this.status    = status;
+        this.cover             = cover, 
+        this.title             = title,
+        this.author            = author,
+        this.pagesRead         = pagesRead,
+        this.pages             = pages,
+        this.previousReadPages = pagesRead, //Useful when change status to change pagesRead/pages
+        this.status            = status;
+    }
+
+    changeStatus(pagesRead, status) {
+        this.pagesRead = pagesRead;
+        this.status = status;
     }
 }
 
-function addBookToLibrary() {
-    // TODO: to implement
+function addBookToLibrary(book) {
+    let len = myLibrary.push(book);
+    pushBookAnimation(createBookCard(book, len - 1, true));
 }
+
+function removeBookFromLibrary(index) {
+    myLibrary.splice(index, 1);
+}
+
+function displayLibrary(library) {
+    for(let i = 0; i < library.length; i++) {
+        createBookCard(library[i], i);
+    }
+}
+
+displayLibrary(myLibrary);
 
 function createBookCoverImg(book) {
     const bookImg = document.createElement("img");
@@ -55,7 +75,7 @@ function createBookCoverImg(book) {
     return bookImg;
 }
 
-function createBookValueProperty(book) {
+function createBookValueProperty(book, index) {
     const bookPropertyContainer = document.createElement("div");
     const titleProp = document.createElement("span");
     const titleValue = document.createElement("span");
@@ -74,26 +94,26 @@ function createBookValueProperty(book) {
     /* Title */
     titleProp.classList.add("prop");
     titleProp.textContent = "Title: ";
-    titleValue.classList.add("book-value");
+    titleValue.classList.add("book-value", "title");
     titleValue.textContent = `${book.title}`;
     titleProp.appendChild(titleValue);
 
     /* Author */
     authorProp.classList.add("prop");
     authorProp.textContent = "Author: ";
-    authorValue.classList.add("book-value");
+    authorValue.classList.add("book-value", "author");
     authorValue.textContent = `${book.author}`;
     authorProp.appendChild(authorValue);
 
     /* Pages read */
     pagesProp.classList.add("prop");
     pagesProp.textContent = "Pages: ";
-    pagesRead.classList.add("book-value");
+    pagesRead.classList.add("book-value", "pages-read");
     pagesRead.textContent = `${book.pagesRead} `;
     pagesProp.appendChild(pagesRead);
 
     /* Book pages */
-    bookPages.classList.add("book-value");
+    bookPages.classList.add("book-value", "pages");
     bookPages.textContent = `/ ${book.pages}`;
     pagesProp.appendChild(bookPages);
 
@@ -104,6 +124,8 @@ function createBookValueProperty(book) {
     statusInfo.onselectstart = function() {return false};
     statusValue.classList.add("status-msg");
     statusValue.textContent = `${READ_STATUS[book.status]} `;
+    statusValue.setAttribute("bookIndex", index);
+    statusValue.onclick = changeStatus; //Change book status event handler
     iconReading.classList.add("fas", "fa-book-reader");
     iconNotRead.classList.add("fas", "fa-book-open");
     iconRead.classList.add("fas", "fa-check-circle");
@@ -123,63 +145,95 @@ function createBookValueProperty(book) {
     return bookPropertyContainer;
 }
 
-function createBookButtons() {
+function createBookButtons(index) {
     const buttonsContainer = document.createElement("div");
     buttonsContainer.classList.add("buttons");
     const editButton = document.createElement("button");
+    editButton.setAttribute("bookIndex", index);
     const penIcon = document.createElement("i");
+    penIcon.setAttribute("bookIndex", index);
     penIcon.classList.add("fas", "fa-pen");
     const trashIcon = document.createElement("i");
+    trashIcon.setAttribute("bookIndex", index);
     trashIcon.classList.add("fas", "fa-trash");
     editButton.classList.add("edit");
     editButton.type = "button";
     editButton.appendChild(penIcon);
     const deleteButton = document.createElement("button");
+    deleteButton.setAttribute("bookIndex", index);
     deleteButton.classList.add("delete");
     deleteButton.type = "button";
     deleteButton.appendChild(trashIcon);
+    
+    /* Add event handlers */
+    deleteButton.onclick = deleteCard;
+    editButton.onclick = editCard;
+
     buttonsContainer.appendChild(editButton);
     buttonsContainer.appendChild(deleteButton);
     return buttonsContainer;
 }
 
-function createBookCard(book) {
+function createBookCard(book, index, animation = false) {
     const bookCard = document.createElement("div");
     const cover = createBookCoverImg(book);
     const bookInfoContainer = document.createElement("div");
-    const bookPropertyContainer = createBookValueProperty(book);
-    const bookButtons = createBookButtons();
+    const bookPropertyContainer = createBookValueProperty(book, index);
+    const bookButtons = createBookButtons(index);
     bookCard.classList.add("book-card");
+    if(animation) {
+        bookCard.classList.add("pop");
+    }
+    bookCard.id = index;
     bookInfoContainer.classList.add("book-info");
     bookInfoContainer.appendChild(bookPropertyContainer);
     bookInfoContainer.appendChild(bookButtons);
     bookCard.appendChild(cover);
     bookCard.appendChild(bookInfoContainer);
     booksContainer.appendChild(bookCard);
-    setTimeout(() => {
-        pushBookAnimation(bookCard);
-    }, 300); //Wait 3ms to show animation in order to give time to display the card
+    return bookCard;
+}
+
+function deleteCard(e) {
+    let bookIndex = e.target.getAttribute("bookIndex");
+    let bookCard = document.getElementById(bookIndex);
+    removeBookFromLibrary(bookIndex);
+    deleteBookAnimation(bookCard);
+    bookCard.innerHTML = "";
+}
+
+function editCard(e) {
+
+}
+
+function updateCardReadPages(card, readPages) {
+    let pagesReadSpan = card.querySelector(".book-value.pages-read");
+    pagesReadSpan.textContent = `${readPages} `; 
 }
 
 function changeStatus(e) { // TODO: change this function
     const parent = e.target.parentElement;
-    let index = Object.keys(READ_STATUS).indexOf(parent.classList.item(1)); //reading, read or not-read class
-    switch(index) {
-        case 0:
+    let bookIndex = e.target.getAttribute("bookIndex");
+    let bookToChange = myLibrary[bookIndex];
+    let bookStatus = bookToChange.status;
+    switch(bookStatus) {
+        case "reading":
             parent.className = "status-info not-read";
-            e.target.textContent = "Not read yet..";
-            //TODO: change read pages if user input not-read ex: 234/500 => 0/500
+            e.target.textContent = READ_STATUS["not-read"];
+            bookToChange.changeStatus(0, "not-read");
             break;
-        case 1:
+        case "not-read":
             parent.className = "status-info read";
-            e.target.textContent = "Read"
-            //TODO: change read pages if user input Read ex: 234/500 => 500/500
+            e.target.textContent = READ_STATUS["read"];
+            bookToChange.changeStatus(bookToChange.pages, "read");
             break;
         default:
             parent.className = "status-info reading";
-            e.target.textContent = "Reading";
-            //TODO: restore previous pages if user input reading
+            e.target.textContent = READ_STATUS["reading"];
+            bookToChange.changeStatus(bookToChange.previousReadPages, "reading");
     }
+    const cardToChange = document.getElementById(bookIndex);
+    updateCardReadPages(cardToChange, bookToChange.pagesRead);
 }
 
 function showErrorFor(input, errorMsg) {
@@ -234,9 +288,6 @@ function checkPagesInput(pagesInput) {
 }
 
 function checkPagesReadInput(pagesReadInput, pagesInput) {
-    console.log("Check pages read:");
-    console.log(pagesInput);
-    console.log(pagesReadInput);
     if(pagesReadInput === "") {
         showErrorFor(pagesRead, "Please insert the total pages you read")
     }
@@ -315,7 +366,7 @@ function setCoverInputAndCreateBookCard(inputFile, userBook) {
     fileReader.onload = function() {
         closeCurrentModal();
         userBook.cover = fileReader.result;
-        createBookCard(userBook);
+        addBookToLibrary(userBook);
     }
     fileReader.onerror = function() {
         alert(fileReader.error);
@@ -512,7 +563,7 @@ function getThemeAndDraw() {
 function saveCoverCanvasAndCreateBookCard() {
     let cover = coverCanvas.toDataURL();
     currentBook.cover = cover;
-    createBookCard(currentBook);
+    addBookToLibrary(currentBook);
     closeCurrentModal();
 }
 
@@ -527,11 +578,16 @@ function popModalAnimation(mod) {
 }
 
 function pushBookAnimation(bookCard) {
-    bookCard.style.transform = "scale(1)";
+    setTimeout(() => {
+        bookCard.classList.remove("pop");
+    }, 300);
 }
 
 function deleteBookAnimation(bookCard) {
-    bookCard.style.transform = "scale(0.001)";
+    bookCard.classList.add("book-card", "pop");
+    setTimeout(() => {
+        bookCard.style.display = "none";
+    }, 300);
 }
 
 /* Events */

@@ -68,8 +68,11 @@ html, body {
     height: 21rem;
     background-color: var(--color10);
     box-shadow: 0 0.3rem 1rem 0.1rem rgba(57, 74, 89, 0.5), 0 6px 20px 0 rgba(57, 74, 89, 0.5);
-    transform: scale(0.001);
     transition: transform 0.3s;
+}
+
+.book-card.pop {
+    transform: scale(0.001);
 }
 
 .book-info {
@@ -137,6 +140,11 @@ html, body {
 .status-info.read span, .status-info.read i.fa-check-circle {
     display: inline;
     color: #72A603
+}
+
+.status-info.reading i.fa-book-reader, .status-info.not-read i.fa-book-open,
+.status-info.read i.fa-check-circle {
+    margin-left: 0.8rem;
 }
 
 .book-card .book-img {
