@@ -31,6 +31,7 @@ coverCanvas.width = 224;
 coverCanvas.height = 336;
 
 let myLibrary = []; //Store books
+let globalId = myLibrary.length;
 
 class Book {
     
@@ -51,8 +52,9 @@ class Book {
 }
 
 function addBookToLibrary(book) {
-    let len = myLibrary.push(book);
-    pushBookAnimation(createBookCard(book, len - 1, true));
+    myLibrary.push(book);
+    pushBookAnimation(createBookCard(book, globalId, true));
+    globalId++;
 }
 
 function removeBookFromLibrary(index) {
