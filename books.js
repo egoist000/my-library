@@ -35,7 +35,8 @@ let globalId = 0; //progId;
 
 class Book {
     
-    constructor(cover, title, author, pagesRead, pages, status) {
+    constructor(id, cover, title, author, pagesRead, pages, status) {
+        this.id                = id,
         this.cover             = cover, 
         this.title             = title,
         this.author            = author,
@@ -51,25 +52,40 @@ class Book {
     }
 }
 
+function jsonObjToBook(jsonObj) {
+    return new Book(jsonObj.id, jsonObj.cover, jsonObj.title, jsonObj.author,
+        jsonObj.pagesRead, jsonObj.pages, jsonObj.status);
+}
+
+function initLibrary() {
+    let maxId = -1;
+    for(let i = 0; i < localStorage.length; i++) {
+        let key = localStorage.key(i);
+        let book = jsonObjToBook(JSON.parse(localStorage.getItem(key)));
+        console.log(book);
+        createBookCard(book, book.id);
+        myLibrary.push(book);
+        if(book.id > maxId) maxId = book.id
+    }
+    globalId = maxId + 1;
+    console.log(globalId);
+}
+
 function addBookToLibrary(book) {
+    console.table(book);
     myLibrary.push(book);
     pushBookAnimation(createBookCard(book, globalId, true));
-    globalId++;
     //TODO: add to local storage
+    localStorage.setItem(globalId, JSON.stringify(book));
+    globalId++;
 }
 
-function removeBookFromLibrary(index) {
-    delete myLibrary[index];
+function removeBookFromLibrary(id) {
+    myLibrary = myLibrary.filter(book => book.id != id);
+    console.log(myLibrary);
     //TODO: remove from local storage
+    localStorage.removeItem(id);
 }
-
-function displayLibrary(library) {
-    for(let i = 0; i < library.length; i++) {
-        createBookCard(library[i], i);
-    }
-}
-
-displayLibrary(myLibrary);
 
 function createBookCoverImg(book) {
     const bookImg = document.createElement("img");
@@ -215,10 +231,11 @@ function updateCardReadPages(card, readPages) {
     pagesReadSpan.textContent = `${readPages} `; 
 }
 
-function changeStatus(e) { // TODO: change this function
+function changeStatus(e) {
     const parent = e.target.parentElement;
     let bookIndex = e.target.getAttribute("bookIndex");
-    let bookToChange = myLibrary[bookIndex];
+    const bookToChange = myLibrary.find(book => book.id == bookIndex);
+    console.log(bookToChange);
     let bookStatus = bookToChange.status;
     switch(bookStatus) {
         case "reading":
@@ -238,6 +255,7 @@ function changeStatus(e) { // TODO: change this function
     }
     const cardToChange = document.getElementById(bookIndex);
     updateCardReadPages(cardToChange, bookToChange.pagesRead);
+    localStorage.setItem(bookIndex, JSON.stringify(bookToChange));
 }
 
 function showErrorFor(input, errorMsg) {
@@ -353,7 +371,7 @@ function checkForm() {
         pagesReadInput = 0;
     }
     if(validForm) {
-        currentBook = new Book("", titleInput, authorInput, pagesReadInput, pagesInput, status);
+        currentBook = new Book(globalId, "", titleInput, authorInput, pagesReadInput, pagesInput, status);
         if(validFileAndNotUndefined) { //Create book
             setCoverInputAndCreateBookCard(fileInput, currentBook);
         }
@@ -625,3 +643,5 @@ coverColorInputs.forEach(colorInput => {
 coverThemes.addEventListener("change", getThemeAndDraw);
 
 customizeCoverBtn.addEventListener("click", saveCoverCanvasAndCreateBookCard);
+
+window.addEventListener("load", initLibrary);
