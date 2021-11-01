@@ -24,6 +24,46 @@
         <!--Books-->
         <div id="books-container">
             <!--Book card-->
+            <div class="book-card">
+                <img class="book-img" src="icons/TheHobbit.jpg" alt="book-img">
+                <div class="book-info">
+                    <div class="book-prop">
+                        <span class="prop">Title: 
+                            <span class="book-value">The Hobbit</span>
+                        </span>
+                        <span class="prop">Author:
+                            <span class="book-value">J.R.R. Tolkien</span>
+                        </span>
+                        <span class="prop">Pages:
+                            <span class="book-value">2355</span>
+                            <span class="book-value">/ 5505</span>
+                        </span>
+                        <span class="prop">Status:</span>
+                        <div onselectstart="return false" class="status-info reading">
+                            <span class="status-msg">Reading</span>
+                            <i class="fas fa-book-reader"></i>
+                            <i class="fas fa-book-open"></i>
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                    </div>
+                    <div class="buttons">
+                        <div class="dropdown">
+                            <div class="dropdown-content">
+                                <span>Edit cover</span>
+                                <span>Change title</span>
+                                <span>Change author</span>
+                                <span>Modify pages</span>
+                            </div>
+                            <button class="edit" type="button">
+                                <i class="fas fa-pen"></i>
+                            </button>
+                        </div>
+                        <button class="delete" type="button">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
         <!--Float button-->
         <div class="float" id="add-btn">
@@ -100,15 +140,15 @@
                     <div class="color-customization">
                         <div class="customize-cover">
                             <label>Cover color</label>
-                            <input type="color" id="bg-cover-color">
+                            <input type="color" id="bg-cover-color" value="#FFFFFF">
                         </div>
                         <div class="customize-cover">
                             <label>Text color</label>
-                            <input type="color" id="text-cover-color">
+                            <input type="color" id="text-cover-color" value="#FFFFFF">
                         </div>
                         <div class="customize-cover">
                             <label>Decoration color</label>
-                            <input type="color" id="decoration-cover-color">
+                            <input type="color" id="decoration-cover-color" value="#000000">
                         </div>
                     </div>
                     <div class="theme-container">

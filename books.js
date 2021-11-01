@@ -168,17 +168,35 @@ function createBookValueProperty(book, index) {
 function createBookButtons(index) {
     const buttonsContainer = document.createElement("div");
     buttonsContainer.classList.add("buttons");
+    const dropdown = document.createElement("div");
+    dropdown.classList.add("dropdown");
+    const dropDownContent = document.createElement("div");
+    dropDownContent.classList.add("dropdown-content");
+    const editCoverSpan = document.createElement("span");
+    const changeTitle = document.createElement("span");
+    const changeAuthor = document.createElement("span");
+    const changePages = document.createElement("span");
     const editButton = document.createElement("button");
-    editButton.setAttribute("bookIndex", index);
+    editCoverSpan.textContent = "Edit cover";
+    changeTitle.textContent = "Change title";
+    changeAuthor.textContent = "Change author";
+    changePages.textContent = "Modify pages";
     const penIcon = document.createElement("i");
-    penIcon.setAttribute("bookIndex", index);
-    penIcon.classList.add("fas", "fa-pen");
-    const trashIcon = document.createElement("i");
-    trashIcon.setAttribute("bookIndex", index);
-    trashIcon.classList.add("fas", "fa-trash");
+    editButton.setAttribute("bookIndex", index);
     editButton.classList.add("edit");
     editButton.type = "button";
     editButton.appendChild(penIcon);
+    penIcon.setAttribute("bookIndex", index);
+    penIcon.classList.add("fas", "fa-pen");
+    dropDownContent.appendChild(editCoverSpan);
+    dropDownContent.appendChild(changeTitle);
+    dropDownContent.appendChild(changeAuthor);
+    dropDownContent.appendChild(changePages);
+    dropdown.appendChild(dropDownContent);
+    dropdown.appendChild(editButton);
+    const trashIcon = document.createElement("i");
+    trashIcon.setAttribute("bookIndex", index);
+    trashIcon.classList.add("fas", "fa-trash");
     const deleteButton = document.createElement("button");
     deleteButton.setAttribute("bookIndex", index);
     deleteButton.classList.add("delete");
@@ -187,9 +205,9 @@ function createBookButtons(index) {
     
     /* Add event handlers */
     deleteButton.onclick = deleteCard;
-    editButton.onclick = editCard;
+    editButton.onclick = showDropDown;
 
-    buttonsContainer.appendChild(editButton);
+    buttonsContainer.appendChild(dropdown);
     buttonsContainer.appendChild(deleteButton);
     return buttonsContainer;
 }
@@ -216,14 +234,17 @@ function createBookCard(book, index, animation = false) {
 
 function deleteCard(e) {
     let bookIndex = e.target.getAttribute("bookIndex");
-    let bookCard = document.getElementById(bookIndex);
+    const bookCard = document.getElementById(bookIndex);
     removeBookFromLibrary(bookIndex);
     deleteBookAnimation(bookCard);
     bookCard.innerHTML = "";
 }
 
-function editCard(e) {
-
+function showDropDown(e) {
+    let bookIndex = e.target.getAttribute("bookIndex");
+    const bookCard = document.getElementById(bookIndex);
+    const dropdown = bookCard.querySelector(".dropdown-content");
+    dropdown.classList.toggle("show");
 }
 
 function updateCardReadPages(card, readPages) {
@@ -315,7 +336,7 @@ function checkPagesReadInput(pagesReadInput, pagesInput) {
     }
     else if(pagesInput !== "") {
         if(pagesReadInput === 0) {
-           showErrorFor(pagesRead, "Please insert a number of pages read greater than 0"); 
+           showErrorFor(pagesRead, "Please insert a number greater than 0"); 
         }
         else if(pagesReadInput < 1 || pagesReadInput > pagesInput) {
            showErrorFor(pagesRead, `Please insert a number of pages read between 1 and ${pagesInput}`); 
@@ -632,7 +653,7 @@ addFloatBtn.addEventListener("click", () => {
     currentModal = modalContainer;
 });
 
-window.addEventListener("click", isClickOutsideModal)
+window.addEventListener("click", isClickOutsideModal);
 
 document.addEventListener("keydown", escapeCurrentModal);
 
