@@ -1,4 +1,4 @@
-const READ_STATUS = {"reading": "Reading", "not-read": "Not read yet..", "read": "Read"}; //Book possible status
+const READ_STATUS = { "reading": "Reading", "not-read": "Not read yet..", "read": "Read" }; //Book possible status
 
 /* Containers and add book float btn */
 
@@ -19,6 +19,7 @@ const bookCover = document.getElementById("book-cover");
 const pagesReadForm = document.getElementById("pages-read-form");
 const closeModalIcons = document.querySelectorAll(".close-modal-icon");
 let shouldCheckPagesReadInput = false;
+let shouldAddBook = true;
 
 /* Cover customization */
 
@@ -30,25 +31,45 @@ let currentBook = null;
 coverCanvas.width = 224;
 coverCanvas.height = 336;
 
+/* Edit forms */
+const editTitleAuthorForm = document.getElementById("change-title-author-form");
+const editTitle = document.getElementById("change-book-title");
+const editAuthor = document.getElementById("change-book-author");
+const editFile = document.getElementById("book-cover-edit");
+const editCoverForm = document.getElementById("change-cover-form");
+const createNewCoverBtn = document.getElementById("create-new-cover");
+
 let myLibrary = []; //Store books
 let globalId = 0; //progId;
 
 class Book {
-    
+
     constructor(id, cover, title, author, pagesRead, pages, status) {
-        this.id                = id,
-        this.cover             = cover, 
-        this.title             = title,
-        this.author            = author,
-        this.pagesRead         = pagesRead,
-        this.pages             = pages,
-        this.previousReadPages = pagesRead, //Useful when change status to change pagesRead/pages
-        this.status            = status;
+        this.id = id,
+            this.cover = cover,
+            this.title = title,
+            this.author = author,
+            this.pagesRead = pagesRead,
+            this.pages = pages,
+            this.previousReadPages = pagesRead, //Useful when change status to change pagesRead/pages
+            this.status = status;
     }
 
     changeStatus(pagesRead, status) {
         this.pagesRead = pagesRead;
         this.status = status;
+    }
+
+    changeTitle(newTitle) {
+        this.title = newTitle;
+    }
+
+    changeAuthor(newAuthor) {
+        this.author = newAuthor;
+    }
+
+    changeCover(newCover) {
+        this.cover = newCover;
     }
 }
 
@@ -58,14 +79,15 @@ function jsonObjToBook(jsonObj) {
 }
 
 function initLibrary() {
+    let books = JSON.parse(localStorage.getItem("myLibrary"));
     let maxId = -1;
-    for(let i = 0; i < localStorage.length; i++) {
-        let key = localStorage.key(i);
-        let book = jsonObjToBook(JSON.parse(localStorage.getItem(key)));
-        console.log(book);
-        createBookCard(book, book.id);
-        myLibrary.push(book);
-        if(book.id > maxId) maxId = book.id
+    if (books !== null) {
+        for (let i = 0; i < books.length; i++) {
+            let book = jsonObjToBook(books[i]);
+            createBookCard(book, book.id);
+            myLibrary.push(book);
+            if (book.id > maxId) maxId = book.id
+        }
     }
     globalId = maxId + 1;
     console.log(globalId);
@@ -75,16 +97,28 @@ function addBookToLibrary(book) {
     console.table(book);
     myLibrary.push(book);
     pushBookAnimation(createBookCard(book, globalId, true));
-    //TODO: add to local storage
-    localStorage.setItem(globalId, JSON.stringify(book));
+    localStorage.setItem("myLibrary", JSON.stringify(myLibrary));
     globalId++;
 }
 
 function removeBookFromLibrary(id) {
     myLibrary = myLibrary.filter(book => book.id != id);
-    console.log(myLibrary);
-    //TODO: remove from local storage
-    localStorage.removeItem(id);
+    localStorage.setItem("myLibrary", JSON.stringify(myLibrary));
+}
+
+function updateBookCardTitleAuthor(book) {
+    const bookCard = document.getElementById(book.id);
+    const title = bookCard.querySelector(".book-value.title");
+    const author = bookCard.querySelector(".book-value.author");
+    title.textContent = book.title;
+    author.textContent = book.author;
+}
+
+function updateBookCardCover(book) {
+    const bookCard = document.getElementById(book.id);
+    const img = bookCard.querySelector(".book-img");
+    img.src = book.cover;
+
 }
 
 function createBookCoverImg(book) {
@@ -141,7 +175,7 @@ function createBookValueProperty(book, index) {
     statusProp.classList.add("prop");
     statusProp.textContent = "Status:";
     statusInfo.classList.add("status-info", `${book.status}`);
-    statusInfo.onselectstart = function() {return false};
+    statusInfo.onselectstart = function () { return false };
     statusValue.classList.add("status-msg");
     statusValue.textContent = `${READ_STATUS[book.status]}`;
     statusValue.setAttribute("bookIndex", index);
@@ -171,15 +205,17 @@ function createBookButtons(index) {
     const dropdown = document.createElement("div");
     dropdown.classList.add("dropdown");
     const dropDownContent = document.createElement("div");
+    dropDownContent.setAttribute("bookIndex", index);
     dropDownContent.classList.add("dropdown-content");
     const editCoverSpan = document.createElement("span");
-    const changeTitle = document.createElement("span");
-    const changeAuthor = document.createElement("span");
+    const changeTitleAndAuthor = document.createElement("span");
     const changePages = document.createElement("span");
     const editButton = document.createElement("button");
+    editCoverSpan.onselectstart = function() {return false};
+    changeTitleAndAuthor.onselectstart = function() {return false};
+    changePages.onselectstart = function() {return false};
     editCoverSpan.textContent = "Edit cover";
-    changeTitle.textContent = "Change title";
-    changeAuthor.textContent = "Change author";
+    changeTitleAndAuthor.textContent = "Change title and author";
     changePages.textContent = "Modify pages";
     const penIcon = document.createElement("i");
     editButton.setAttribute("bookIndex", index);
@@ -188,9 +224,8 @@ function createBookButtons(index) {
     editButton.appendChild(penIcon);
     penIcon.setAttribute("bookIndex", index);
     penIcon.classList.add("fas", "fa-pen");
+    dropDownContent.appendChild(changeTitleAndAuthor);
     dropDownContent.appendChild(editCoverSpan);
-    dropDownContent.appendChild(changeTitle);
-    dropDownContent.appendChild(changeAuthor);
     dropDownContent.appendChild(changePages);
     dropdown.appendChild(dropDownContent);
     dropdown.appendChild(editButton);
@@ -202,14 +237,30 @@ function createBookButtons(index) {
     deleteButton.classList.add("delete");
     deleteButton.type = "button";
     deleteButton.appendChild(trashIcon);
-    
+
     /* Add event handlers */
     deleteButton.onclick = deleteCard;
     editButton.onclick = showDropDown;
+    changeTitleAndAuthor.onclick = showEditTitleAuthorModal;
+    editCoverSpan.onclick = showEditCoverModal;
 
     buttonsContainer.appendChild(dropdown);
     buttonsContainer.appendChild(deleteButton);
     return buttonsContainer;
+}
+
+function showEditTitleAuthorModal(e) {
+    e.target.parentNode.classList.remove("show");
+    const editTitleModal = document.getElementById("edit-title-author");
+    editTitle.placeholder = currentBook.title;
+    editAuthor.placeholder = currentBook.author;
+    openModalAndSetCurrent(editTitleModal);
+}
+
+function showEditCoverModal(e) {
+    e.target.parentNode.classList.remove("show");
+    const editCoverModal = document.getElementById("edit-cover");
+    openModalAndSetCurrent(editCoverModal);
 }
 
 function createBookCard(book, index, animation = false) {
@@ -245,20 +296,20 @@ function showDropDown(e) {
     const bookCard = document.getElementById(bookIndex);
     const dropdown = bookCard.querySelector(".dropdown-content");
     dropdown.classList.toggle("show");
+    currentBook = myLibrary.find(book => book.id == bookIndex);
 }
 
 function updateCardReadPages(card, readPages) {
     let pagesReadSpan = card.querySelector(".book-value.pages-read");
-    pagesReadSpan.textContent = `${readPages} `; 
+    pagesReadSpan.textContent = `${readPages} `;
 }
 
 function changeStatus(e) {
     const parent = e.target.parentElement;
     let bookIndex = e.target.getAttribute("bookIndex");
     const bookToChange = myLibrary.find(book => book.id == bookIndex);
-    console.log(bookToChange);
     let bookStatus = bookToChange.status;
-    switch(bookStatus) {
+    switch (bookStatus) {
         case "reading":
             parent.className = "status-info not-read";
             e.target.textContent = READ_STATUS["not-read"];
@@ -276,7 +327,7 @@ function changeStatus(e) {
     }
     const cardToChange = document.getElementById(bookIndex);
     updateCardReadPages(cardToChange, bookToChange.pagesRead);
-    localStorage.setItem(bookIndex, JSON.stringify(bookToChange));
+    localStorage.setItem("myLibrary", JSON.stringify(myLibrary));
 }
 
 function showErrorFor(input, errorMsg) {
@@ -291,36 +342,36 @@ function showSuccessFor(input) {
     formControl.className = "form-control success";
 }
 
-function checkTitleInput(titleInput) {
-    if(titleInput === "") {
-        showErrorFor(bookTitle, "Please insert a book title");
+function checkTitleInput(titleInput, inputElem = bookTitle) {
+    if (titleInput === "") {
+        showErrorFor(inputElem, "Please insert a book title");
         return false;
     }
     else {
-        showSuccessFor(bookTitle);
+        showSuccessFor(inputElem);
         return true;
     }
 }
 
-function checkAuthorInput(authorInput) {
-    if(authorInput === "") {
-        showErrorFor(bookAuthor, "Please insert an Author for your book");
+function checkAuthorInput(authorInput, inputElem = bookAuthor) {
+    if (authorInput === "") {
+        showErrorFor(inputElem, "Please insert an Author for your book");
         return false;
     }
     else {
-        showSuccessFor(bookAuthor);
+        showSuccessFor(inputElem);
         return true;
     }
 }
 
 function checkPagesInput(pagesInput) {
-    if(pagesInput === "") {
+    if (pagesInput === "") {
         showErrorFor(bookPages, "Please insert the total pages of your book");
     }
-    else if(pagesInput < 0) {
+    else if (pagesInput < 0) {
         showErrorFor(bookPages, "Please insert positive number for book pages");
     }
-    else if(pagesInput === 0 || pagesInput > 99999) {
+    else if (pagesInput === 0 || pagesInput > 99999) {
         showErrorFor(bookPages, "Please select a number between 1 and 99999");
     }
     else {
@@ -331,15 +382,15 @@ function checkPagesInput(pagesInput) {
 }
 
 function checkPagesReadInput(pagesReadInput, pagesInput) {
-    if(pagesReadInput === "") {
+    if (pagesReadInput === "") {
         showErrorFor(pagesRead, "Please insert the total pages you read")
     }
-    else if(pagesInput !== "") {
-        if(pagesReadInput === 0) {
-           showErrorFor(pagesRead, "Please insert a number greater than 0"); 
+    else if (pagesInput !== "") {
+        if (pagesReadInput === 0) {
+            showErrorFor(pagesRead, "Please insert a number greater than 0");
         }
-        else if(pagesReadInput < 1 || pagesReadInput > pagesInput) {
-           showErrorFor(pagesRead, `Please insert a number of pages read between 1 and ${pagesInput}`); 
+        else if (pagesReadInput < 1 || pagesReadInput > pagesInput) {
+            showErrorFor(pagesRead, `Please insert a number of pages read between 1 and ${pagesInput}`);
         }
         else {
             showSuccessFor(pagesRead);
@@ -349,15 +400,19 @@ function checkPagesReadInput(pagesReadInput, pagesInput) {
     return false;
 }
 
-function checkFileInput(fileInput) {
-    if(fileInput !== undefined) {
+function checkFileInput(fileInput, inputElem = bookCover) {
+    if (fileInput !== undefined) {
         console.log(fileInput.size);
-        if(fileInput.size > 3072*Math.pow(10,3)) {
-            showErrorFor(bookCover, "File size must be less than 3Mb");
+        if (fileInput.size > 3072 * Math.pow(10, 3)) {
+            showErrorFor(inputElem, "File size must be less than 3Mb");
+            return false;
+        }
+        else if(!fileInput.type.includes("image")) {
+            showErrorFor(inputElem, "Only images allowed");
             return false;
         }
         else {
-            showSuccessFor(bookCover);
+            showSuccessFor(inputElem);
             return true;
         }
     }
@@ -377,26 +432,26 @@ function checkForm() {
     let status = "not-read";
     let validForm = false;
 
-    if(shouldCheckPagesReadInput) {
+    if (shouldCheckPagesReadInput) {
         let validPagesRead = checkPagesReadInput(pagesReadInput, pagesInput);
-        if(validTitle && validAuthor && validPages && validPagesRead) {
+        if (validTitle && validAuthor && validPages && validPagesRead) {
             validForm = true;
             status = "reading";
-            if(pagesInput === pagesReadInput) {
+            if (pagesInput === pagesReadInput) {
                 status = "read";
             }
         }
     }
-    else if(validTitle && validAuthor && validPages) {
+    else if (validTitle && validAuthor && validPages) {
         validForm = true;
         pagesReadInput = 0;
     }
-    if(validForm) {
+    if (validForm) {
         currentBook = new Book(globalId, "", titleInput, authorInput, pagesReadInput, pagesInput, status);
-        if(validFileAndNotUndefined) { //Create book
+        if (validFileAndNotUndefined) { //Create book
             setCoverInputAndCreateBookCard(fileInput, currentBook);
         }
-        else if(fileInput === undefined){ //Push cover creation modal if cover is not provided
+        else if (fileInput === undefined) { //Push cover creation modal if cover is not provided
             closeCurrentModal();
             let coverCreationModal = setCoverCreationModal();
             openModalAndSetCurrent(coverCreationModal);
@@ -407,36 +462,36 @@ function checkForm() {
 function setCoverInputAndCreateBookCard(inputFile, userBook) {
     let fileReader = new FileReader();
     fileReader.readAsDataURL(inputFile);
-    fileReader.onload = function() {
+    fileReader.onload = function () {
         closeCurrentModal();
         userBook.cover = fileReader.result;
         addBookToLibrary(userBook);
     }
-    fileReader.onerror = function() {
+    fileReader.onerror = function () {
         alert(fileReader.error);
     }
 }
 
 function resetModalForm(modal) {
     let form = modal.querySelector("form");
-    if(form !== null) {
-        if(form.id === "add-book-form") {
+    if (form !== null) {
+        if (form.id === "add-book-form") {
             shouldCheckPagesReadInput = false;
-            let inputs = form.querySelectorAll(".form-control");
-            inputs.forEach(input => {
-                if(input.id === "pages-read-form") {
-                    input.classList.add("no-display");
-                }
-                input.classList.remove("error", "success");
-            });
         }
+        let inputs = form.querySelectorAll(".form-control");
+        inputs.forEach(input => {
+            if (input.id === "pages-read-form") {
+                input.classList.add("no-display");
+            }
+            input.classList.remove("error", "success");
+        });
         form.reset();
     }
 }
 
 function closeCurrentModal() {
     popModalAnimation(currentModal);
-    setTimeout(() => {        
+    setTimeout(() => {
         resetModalForm(currentModal);
         currentModal.style.display = "none";
         currentModal = null;
@@ -445,20 +500,20 @@ function closeCurrentModal() {
 
 function openModalAndSetCurrent(mod) {
     mod.style.display = "flex";
-    setTimeout(() => {        
+    setTimeout(() => {
         currentModal = mod;
         pushModalAnimation(mod);
     }, 300);
 }
 
 function isClickOutsideModal(e) {
-    if(e.target.classList.contains("modal-container")) {
+    if (e.target.classList.contains("modal-container")) {
         closeCurrentModal();
     }
 }
 
 function escapeCurrentModal(e) {
-    if(e.key === "Escape" && currentModal !== null) {
+    if (e.key === "Escape" && currentModal !== null) {
         closeCurrentModal();
     }
 }
@@ -478,12 +533,12 @@ function wrapText(context, text, x, y, maxWidth, lineHeight) {
     let words = text.split(" ");
     console.table(words);
     let line = "";
-    for(let i = 0; i < words.length; i++) {
+    for (let i = 0; i < words.length; i++) {
         let testLine = line + words[i] + " ";
         let testWidth = context.measureText(testLine).width;
         console.log(testWidth);
         console.log(maxWidth);
-        if(testWidth > maxWidth && i > 0) {
+        if (testWidth > maxWidth && i > 0) {
             context.fillText(line, x, y);
             line = words[i] + " ";
             y += lineHeight;
@@ -495,9 +550,9 @@ function wrapText(context, text, x, y, maxWidth, lineHeight) {
     context.fillText(line, x, y);
 }
 
-function drawSimpleTheme(bookTitle = "Title", bgColor = "rgb(255, 255, 255)", decorationColor = "rgb(0, 0, 0)", 
+function drawSimpleTheme(bookTitle = "Title", bgColor = "rgb(255, 255, 255)", decorationColor = "rgb(0, 0, 0)",
     textColor = "rgb(255, 255, 255)") {
-    if(coverCanvas.getContext) {
+    if (coverCanvas.getContext) {
         let ctx = coverCanvas.getContext("2d");
         ctx.clearRect(0, 0, 224, 336);
         ctx.fillStyle = bgColor;
@@ -507,7 +562,7 @@ function drawSimpleTheme(bookTitle = "Title", bgColor = "rgb(255, 255, 255)", de
         ctx.fillStyle = textColor;
         ctx.font = "18px serif";
         ctx.textAlign = "center";
-        if(bookTitle.length >= 24) {
+        if (bookTitle.length >= 24) {
             wrapText(ctx, bookTitle, 112, 158, 215, 20);
         }
         else {
@@ -517,27 +572,27 @@ function drawSimpleTheme(bookTitle = "Title", bgColor = "rgb(255, 255, 255)", de
 
 }
 
-function drawModernTheme(bookTitle = "Title", bgColor = "rgb(255, 255, 255)", decorationColor = "rgb(0, 0, 0)", 
+function drawModernTheme(bookTitle = "Title", bgColor = "rgb(255, 255, 255)", decorationColor = "rgb(0, 0, 0)",
     textColor = "rgb(255, 255, 255)") {
-    if(coverCanvas.getContext) {
+    if (coverCanvas.getContext) {
         let ctx = coverCanvas.getContext("2d");
         ctx.clearRect(0, 0, 224, 336);
         ctx.fillStyle = bgColor;
         ctx.fillRect(0, 0, 224, 336);
         ctx.fillStyle = decorationColor;
         ctx.beginPath();
-        ctx.arc(0, 0, 70, 0, 1.5*Math.PI);
+        ctx.arc(0, 0, 70, 0, 1.5 * Math.PI);
         ctx.moveTo(192, 0);
-        ctx.arc(224, 0, 70, 0, 1.5*Math.PI);
+        ctx.arc(224, 0, 70, 0, 1.5 * Math.PI);
         ctx.moveTo(0, 366);
-        ctx.arc(0, 336, 70, 1.5*Math.PI, 0.5*Math.PI);
+        ctx.arc(0, 336, 70, 1.5 * Math.PI, 0.5 * Math.PI);
         ctx.moveTo(224, 336);
         ctx.arc(224, 336, 70, Math.PI, 0);
         ctx.fill();
         ctx.fillStyle = textColor;
         ctx.font = "18px serif";
         ctx.textAlign = "center";
-        if(bookTitle.length >= 24) {
+        if (bookTitle.length >= 24) {
             wrapText(ctx, bookTitle, 112, 158, 215, 20);
         }
         else {
@@ -546,9 +601,9 @@ function drawModernTheme(bookTitle = "Title", bgColor = "rgb(255, 255, 255)", de
     }
 }
 
-function drawVintageTheme(bookTitle = "Title", bgColor = "rgb(255, 255, 255)", decorationColor = "rgb(0, 0, 0)", 
+function drawVintageTheme(bookTitle = "Title", bgColor = "rgb(255, 255, 255)", decorationColor = "rgb(0, 0, 0)",
     textColor = "rgb(255, 255, 255)") {
-    if(coverCanvas.getContext) {
+    if (coverCanvas.getContext) {
         let ctx = coverCanvas.getContext("2d");
         ctx.clearRect(0, 0, 224, 336);
         ctx.fillStyle = bgColor;
@@ -577,14 +632,13 @@ function drawVintageTheme(bookTitle = "Title", bgColor = "rgb(255, 255, 255)", d
         ctx.fillStyle = textColor;
         ctx.font = "18px serif";
         ctx.textAlign = "center";
-        if(bookTitle.length >= 24) {
+        if (bookTitle.length >= 24) {
             wrapText(ctx, bookTitle, 112, 158, 215, 20);
         }
         else {
             ctx.fillText(bookTitle, 112, 178, 215);
         }
     }
-
 }
 
 function getThemeAndDraw() {
@@ -592,7 +646,7 @@ function getThemeAndDraw() {
     let textColor = document.getElementById("text-cover-color").value
     let decorationColor = document.getElementById("decoration-cover-color").value
     let theme = coverThemes.value;
-    switch(theme) {
+    switch (theme) {
         case "vintage":
             drawVintageTheme(currentBook.title, bgColor, decorationColor, textColor);
             break;
@@ -607,8 +661,30 @@ function getThemeAndDraw() {
 function saveCoverCanvasAndCreateBookCard() {
     let cover = coverCanvas.toDataURL();
     currentBook.cover = cover;
-    addBookToLibrary(currentBook);
+    if(shouldAddBook) { addBookToLibrary(currentBook);} //Cover creation from addBookForm
+    else { //Cover creation from edit form
+        updateBookCardCover(currentBook);
+        localStorage.setItem("myLibrary", JSON.stringify(myLibrary));
+    }
+    shouldAddBook = true;
     closeCurrentModal();
+}
+
+function updateBookCover(file, book) {
+    let fileReader = new FileReader();
+    fileReader.readAsDataURL(file);
+    fileReader.onload = function () {
+        book.changeCover(fileReader.result);
+        updateBookCardCover(currentBook);
+        closeCurrentModal();
+        localStorage.setItem("myLibrary", JSON.stringify(myLibrary));
+        setTimeout(() => {
+            resetModalForm(currentModal);
+        },200);
+    }
+    fileReader.onerror = function () {
+        alert(fileReader.error);
+    }
 }
 
 /* Animations */
@@ -641,6 +717,35 @@ checkMark.addEventListener("change", showPagesReadInput)
 addBookForm.addEventListener("submit", (e) => {
     e.preventDefault();
     checkForm();
+});
+
+editTitleAuthorForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    if(checkTitleInput(editTitle.value, editTitle) && checkAuthorInput(editAuthor.value, editAuthor)) {
+        currentBook.changeTitle(editTitle.value);
+        currentBook.changeAuthor(editAuthor.value);
+        updateBookCardTitleAuthor(currentBook);
+        closeCurrentModal();
+        localStorage.setItem("myLibrary", JSON.stringify(myLibrary));
+        setTimeout(() => {
+            resetModalForm(currentModal);
+        },200);
+    }
+});
+
+editCoverForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    if(editFile.files[0] === undefined) {showErrorFor(editFile, "Please select a file first")}
+    else if(checkFileInput(editFile.files[0], editFile)) {
+        updateBookCover(editFile.files[0], currentBook);
+    }
+});
+
+createNewCoverBtn.addEventListener("click", () => {
+    const modal = setCoverCreationModal();
+    shouldAddBook = false;
+    closeCurrentModal();
+    openModalAndSetCurrent(modal);
 });
 
 closeModalIcons.forEach(closeIcons => {

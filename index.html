@@ -24,46 +24,6 @@
         <!--Books-->
         <div id="books-container">
             <!--Book card-->
-            <div class="book-card">
-                <img class="book-img" src="icons/TheHobbit.jpg" alt="book-img">
-                <div class="book-info">
-                    <div class="book-prop">
-                        <span class="prop">Title: 
-                            <span class="book-value">The Hobbit</span>
-                        </span>
-                        <span class="prop">Author:
-                            <span class="book-value">J.R.R. Tolkien</span>
-                        </span>
-                        <span class="prop">Pages:
-                            <span class="book-value">2355</span>
-                            <span class="book-value">/ 5505</span>
-                        </span>
-                        <span class="prop">Status:</span>
-                        <div onselectstart="return false" class="status-info reading">
-                            <span class="status-msg">Reading</span>
-                            <i class="fas fa-book-reader"></i>
-                            <i class="fas fa-book-open"></i>
-                            <i class="fas fa-check-circle"></i>
-                        </div>
-                    </div>
-                    <div class="buttons">
-                        <div class="dropdown">
-                            <div class="dropdown-content">
-                                <span>Edit cover</span>
-                                <span>Change title</span>
-                                <span>Change author</span>
-                                <span>Modify pages</span>
-                            </div>
-                            <button class="edit" type="button">
-                                <i class="fas fa-pen"></i>
-                            </button>
-                        </div>
-                        <button class="delete" type="button">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
         </div>
         <!--Float button-->
         <div class="float" id="add-btn">
@@ -117,7 +77,7 @@
                     <div class="form-control" id="cover-form">
                         <label>Book cover</label>
                         <input id="book-cover" type="file" accept="image/jpg, image/png, image/svg">
-                        <small id="file-error">Error</small>
+                        <small class="file-error">Error</small>
                     </div>
                     <button>Add my book!</button>
                 </form>
@@ -165,6 +125,46 @@
                         Add my cover!
                     </button>
                 </div>
+            </div>
+        </div>
+        <!--Edit title author modal-->
+        <div class="modal-container" id="edit-title-author">
+            <div class="modal">
+                <form class="form" id="change-title-author-form" autocomplete="off">
+                    <div class="form-control">
+                        <label>Title</label>
+                        <input id="change-book-title" type="text" placeholder="" maxlength="42">
+                        <i class="fas fa-check-circle"></i>
+                        <i class="fas fa-exclamation-circle"></i>
+                        <i class="fas fa-font"></i>
+                        <small>Error</small>
+                    </div>
+                    <div class="form-control">
+                        <label>Author</label>
+                        <input id="change-book-author" type="text" placeholder="" maxlength="32">
+                        <i class="fas fa-check-circle"></i>
+                        <i class="fas fa-exclamation-circle"></i>
+                        <i class="fas fa-font"></i>
+                        <small>Error</small>
+                    </div>
+                    <button>Update book</button>
+                </form>
+            </div>
+        </div>
+        <div class="modal-container" id="edit-cover">
+            <div class="modal">
+                <form class="form" id="change-cover-form">
+                    <div class="form-control">
+                        <label>Choose an image for your cover</label>
+                        <input id="book-cover-edit" type="file" accept="image/jpg, image/png, image/svg">
+                        <small>Error</small>
+                    </div>
+                    <div class="choices">
+                        <button id="save-new-cover">Upload cover</button>
+                        <span>Or</span>
+                        <button id="create-new-cover" type="button">Create one :)</button>
+                    </div>
+                </form>
             </div>
         </div>
         <!--Footer-->

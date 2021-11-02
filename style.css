@@ -316,7 +316,7 @@ html, body {
     width: 100%;
     height: 100%;
     min-height: 100vh;
-    overflow: auto;
+    overflow: hidden;
     margin: 0;
     background-color: rgba(0, 0, 0, 0.3);
 }
@@ -470,7 +470,7 @@ html, body {
     left: 0;
 }
 
-#file-error {
+.form-control .file-error {
     bottom: -1.15rem;
 }
 
@@ -495,6 +495,17 @@ html, body {
 
 .form button:hover {
     color: var(--color10);
+}
+
+.form .choices {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+}
+
+.choices button {
+    margin-top: 0.3rem;
 }
 
 /* Remove input arrows */
