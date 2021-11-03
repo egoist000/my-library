@@ -38,6 +38,8 @@ const editAuthor = document.getElementById("change-book-author");
 const editFile = document.getElementById("book-cover-edit");
 const editCoverForm = document.getElementById("change-cover-form");
 const createNewCoverBtn = document.getElementById("create-new-cover");
+const editPagesForm = document.getElementById("increase-pages-form");
+const pageRange = document.getElementById("page-range");
 
 let myLibrary = []; //Store books
 let globalId = 0; //progId;
@@ -112,6 +114,14 @@ function updateBookCardTitleAuthor(book) {
     const author = bookCard.querySelector(".book-value.author");
     title.textContent = book.title;
     author.textContent = book.author;
+}
+
+function updateCardStatus(card, book) {
+    let msg = READ_STATUS[book.status];
+    const statusMsg = card.querySelector(".status-msg");
+    statusMsg.parentNode.className = "";
+    statusMsg.parentNode.classList.add("status-info", `${book.status}`);
+    statusMsg.textContent = msg;
 }
 
 function updateBookCardCover(book) {
@@ -242,6 +252,7 @@ function createBookButtons(index) {
     deleteButton.onclick = deleteCard;
     editButton.onclick = showDropDown;
     changeTitleAndAuthor.onclick = showEditTitleAuthorModal;
+    changePages.onclick = showEditPagesModal;
     editCoverSpan.onclick = showEditCoverModal;
 
     buttonsContainer.appendChild(dropdown);
@@ -265,6 +276,23 @@ function showEditCoverModal(e) {
     e.target.parentNode.classList.remove("show");
     const editCoverModal = document.getElementById("edit-cover");
     openModalAndSetCurrent(editCoverModal);
+}
+
+function showEditPagesModal(e) {
+    let bookIndex = e.target.parentNode.getAttribute("bookIndex");
+    currentBook = myLibrary.find(book => book.id == bookIndex);
+    e.target.parentNode.classList.remove("show");
+    const editPagesModal = document.getElementById("modify-read-pages");
+    pageRange.value = currentBook.pagesRead;
+    pageRange.max = currentBook.pages;
+    const formLabel = editPagesForm.querySelector("label");
+    formLabel.textContent = `${currentBook.pagesRead} / ${currentBook.pages}`
+    openModalAndSetCurrent(editPagesModal);
+}
+
+function changeLabelText(e) {
+    const pagesLbl = editPagesForm.querySelector("label");
+    pagesLbl.textContent = `${e.target.value} / ${currentBook.pages}`;
 }
 
 function createBookCard(book, index, animation = false) {
@@ -744,6 +772,21 @@ editCoverForm.addEventListener("submit", (e) => {
     }
 });
 
+editPagesForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    if(+pageRange.value === 0) {currentBook.changeStatus(0, "not-read")}
+    else if(+pageRange.value === currentBook.pages) {currentBook.changeStatus(currentBook.pages, "read")}
+    else {currentBook.changeStatus(+pageRange.value, "reading")}
+    let card = document.getElementById(`${currentBook.id}`);
+    updateCardStatus(card, currentBook);
+    updateCardReadPages(card, currentBook.pagesRead);
+    closeCurrentModal();
+    localStorage.setItem("myLibrary", JSON.stringify(myLibrary));
+    setTimeout(() => {
+        editPagesForm.reset;
+    },200);
+});
+
 createNewCoverBtn.addEventListener("click", () => {
     const modal = setCoverCreationModal();
     shouldAddBook = false;
@@ -768,6 +811,8 @@ document.addEventListener("keydown", escapeCurrentModal);
 coverColorInputs.forEach(colorInput => {
     colorInput.addEventListener("change", getThemeAndDraw);
 });
+
+pageRange.addEventListener("input", changeLabelText);
 
 coverThemes.addEventListener("change", getThemeAndDraw);
 

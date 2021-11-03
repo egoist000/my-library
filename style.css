@@ -581,6 +581,47 @@ input[type=number] {
     padding: 1rem;
 }
 
+.modal.pages {
+    width: 24rem;
+}
+
+#increase-pages-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#increase-pages-form label {
+    font-size: 1.3rem;
+    margin-top: 1rem;
+    margin-bottom: 0.3rem;
+    color: var(--color1);
+}
+
+#increase-pages-form input {
+    width: 80%;
+    margin-bottom: 1.5rem;
+}
+
+#increase-pages-form button {
+    background-color: #A7B741;
+    border: 2px solid #A7B741;
+    color: var(--color1);
+    font-family: inherit;
+    font-size: 1.3rem;
+    font-weight: 900;
+    cursor: pointer;
+    border-radius: 1rem;
+    padding: 0.6rem;
+    display: block;
+    width: 70%;
+    margin-bottom: 1rem;
+}
+
+#increase-pages-form button:hover {
+    color: var(--color10);
+}
+
 /* Footer */
 
 .footer {
