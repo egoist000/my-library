@@ -250,6 +250,8 @@ function createBookButtons(index) {
 }
 
 function showEditTitleAuthorModal(e) {
+    let bookIndex = e.target.parentNode.getAttribute("bookIndex");
+    currentBook = myLibrary.find(book => book.id == bookIndex);
     e.target.parentNode.classList.remove("show");
     const editTitleModal = document.getElementById("edit-title-author");
     editTitle.placeholder = currentBook.title;
@@ -258,6 +260,8 @@ function showEditTitleAuthorModal(e) {
 }
 
 function showEditCoverModal(e) {
+    let bookIndex = e.target.parentNode.getAttribute("bookIndex");
+    currentBook = myLibrary.find(book => book.id == bookIndex);
     e.target.parentNode.classList.remove("show");
     const editCoverModal = document.getElementById("edit-cover");
     openModalAndSetCurrent(editCoverModal);
@@ -296,7 +300,6 @@ function showDropDown(e) {
     const bookCard = document.getElementById(bookIndex);
     const dropdown = bookCard.querySelector(".dropdown-content");
     dropdown.classList.toggle("show");
-    currentBook = myLibrary.find(book => book.id == bookIndex);
 }
 
 function updateCardReadPages(card, readPages) {
