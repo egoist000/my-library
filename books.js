@@ -73,6 +73,10 @@ class Book {
     changeCover(newCover) {
         this.cover = newCover;
     }
+    
+    changePreviousPagesRead(newPagesRead) {
+        this.previousReadPages = newPagesRead;
+    }
 }
 
 function jsonObjToBook(jsonObj) {
@@ -778,6 +782,7 @@ editPagesForm.addEventListener("submit", (e) => {
     else if(+pageRange.value === currentBook.pages) {currentBook.changeStatus(currentBook.pages, "read")}
     else {currentBook.changeStatus(+pageRange.value, "reading")}
     let card = document.getElementById(`${currentBook.id}`);
+    currentBook.changePreviousPagesRead(currentBook.pagesRead);
     updateCardStatus(card, currentBook);
     updateCardReadPages(card, currentBook.pagesRead);
     closeCurrentModal();
